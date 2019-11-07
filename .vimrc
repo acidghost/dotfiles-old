@@ -45,6 +45,17 @@ endif
 set background=dark
 colorscheme rigel
 
+" Save your swp files to a less annoying place than the current directory.
+" If you have .vim-swap in the current directory, it'll use that.
+" Otherwise it saves it to ~/.vim/swap, ~/tmp or .
+if isdirectory($HOME . '/.vim/swap') == 0
+    call mkdir($HOME.'/.vim/swap', 'p')
+endif
+set directory=./.vim-swap//
+set directory+=~/.vim/swap//
+set directory+=~/tmp//
+set directory+=.
+
 " Lightline configuration
 let g:lightline = {
     \ 'colorscheme': 'rigel',
