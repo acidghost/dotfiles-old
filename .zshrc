@@ -19,7 +19,7 @@ compinit
 # End of lines added by compinstall
 
 
-source antigen.zsh
+source ~/antigen.zsh
 
 antigen use oh-my-zsh
 
@@ -51,4 +51,4 @@ alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 export TERM=xterm-256color
 export EDITOR=vim
 
-[[ -e ~/.path ]] && source .path
+[[ -e ~/.path ]] && source ~/.path
