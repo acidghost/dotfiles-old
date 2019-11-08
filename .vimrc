@@ -33,6 +33,12 @@ call plug#begin('~/.vim/plugged')
 
 " Make sure you use single quotes
 Plug 'itchyny/lightline.vim'
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+
+" Themes
 Plug 'flrnprz/plastic.vim'
 Plug 'Rigellute/rigel'
 
@@ -59,4 +65,10 @@ set directory+=.
 " Lightline configuration
 let g:lightline = {
     \ 'colorscheme': 'rigel',
+    \ }
+
+" Language client configuration
+set hidden      " Required for operations modifying multiple buffers like rename.
+let g:LanguageClient_serverCommands = {
+    \ 'python': ['~/.local/bin/pyls'],
     \ }

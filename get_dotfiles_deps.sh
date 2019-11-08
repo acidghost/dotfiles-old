@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo 'Installing some apt packages...'
-sudo apt install curl python-pygments
+sudo apt install curl python3-pip python-pygments
 
 if test -e ~/antigen.zsh; then
     echo 'Antigen is already installed'
@@ -17,3 +17,5 @@ else
     curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 fi
+
+pip3 install python-language-server 'python-language-server[yapf]' 'python-language-server[pyflakes]'
