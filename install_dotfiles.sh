@@ -66,7 +66,7 @@ fi
 
 echo 'Installing xmonad + urxvt...'
 sudo apt install xmonad libghc-xmonad-dev libghc-xmonad-contrib-dev \
-    suckless-tools xmobar rxvt-unicode feh
+    suckless-tools xmobar rxvt-unicode feh xscreensaver
 
 if [[ ! -e /usr/share/xsessions/xmonad-custom.desktop ]]; then
     sudo cp ~/xmonad-custom.desktop /usr/share/xsessions/xmonad-custom.desktop

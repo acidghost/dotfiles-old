@@ -2,13 +2,18 @@ import           XMonad
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Util.Run                ( spawnPipe )
-import           XMonad.Util.EZConfig           ( additionalKeysP )
+import           XMonad.Util.EZConfig           ( additionalKeys
+                                                , additionalKeysP
+                                                )
 import           System.IO
 import           Graphics.X11.ExtraTypes.XF86
 
 main = do
     xmproc <- spawnPipe "xmobar"
-    xmonad $ (myConfig xmproc) `additionalKeysP` myKeysXF86
+    xmonad
+        $                 (myConfig xmproc)
+        `additionalKeys`  myKeys
+        `additionalKeysP` myKeysXF86
 
 myConfig xmproc = def
     { modMask            = mod4Mask
@@ -24,6 +29,8 @@ myConfig xmproc = def
                                , ppTitle  = xmobarColor "green" "" . shorten 180
                                }
     }
+
+myKeys = [((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")]
 
 myKeysXF86 =
     [ ("<XF86MonBrightnessUp>"  , spawn "lux -a 10%")
