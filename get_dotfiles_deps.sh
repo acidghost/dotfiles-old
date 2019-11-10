@@ -66,7 +66,7 @@ fi
 
 echo 'Installing xmonad + urxvt...'
 sudo apt install xmonad libghc-xmonad-dev libghc-xmonad-contrib-dev \
-    suckless-tools rxvt-unicode
+    suckless-tools xmobar rxvt-unicode
 
 if [[ -d /opt/lux ]]; then
     echo 'lux is installed'
