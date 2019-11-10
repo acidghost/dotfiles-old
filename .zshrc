@@ -55,3 +55,10 @@ export ZSH_TMUX_FIXTERM=true
 
 [[ -d ~/.local/bin ]] && export PATH="$PATH:$HOME/.local/bin"
 [[ -e ~/.path ]] && source ~/.path
+
+# Aliases
+alias ta='tmux attach'
+alias tat='tmux attach -t'
+for i in `seq 10`; do
+    alias "tree$i"="tree -L $i"
+done
