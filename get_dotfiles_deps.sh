@@ -47,3 +47,7 @@ else
         /opt/base16-xresources
 fi
 
+echo 'Installing xmonad + urxvt...'
+sudo apt install xmonad libghc-xmonad-dev libghc-xmonad-contrib-dev \
+    suckless-tools rxvt-unicode
+
