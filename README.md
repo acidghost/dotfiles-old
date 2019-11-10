@@ -9,4 +9,4 @@
 #### 3. Checkout repository's contents
 `dotfiles checkout`
 #### 4. Install dependencies
-`./get_dotfiles_deps.sh`
+`./install_dotfiles.sh`
