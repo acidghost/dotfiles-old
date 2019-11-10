@@ -47,6 +47,23 @@ else
         /opt/base16-xresources
 fi
 
+if [[ which stack 2>&1 /dev/null ]]; then
+    echo "Haskell stack is installed"
+else
+    echo "Installing Haskell's stack..."
+    curl -sSL https://get.haskellstack.org/ | sh
+fi
+
+if [[ -e ~/.local/bin/hie-wrapper ]]; then
+    echo 'Haskell IDE Engine already installed'
+else
+    echo 'Installing Haskell IDE Engine...'
+    git clone https://github.com/haskell/haskell-ide-engine --recurse-submodules
+    cd haskell-ide-engine
+    stack ./install.hs stack-hie-8.6.5
+    cd $HOME
+fi
+
 echo 'Installing xmonad + urxvt...'
 sudo apt install xmonad libghc-xmonad-dev libghc-xmonad-contrib-dev \
     suckless-tools rxvt-unicode

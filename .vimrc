@@ -71,6 +71,7 @@ let g:lightline = {
 set hidden      " Required for operations modifying multiple buffers like rename.
 let g:LanguageClient_serverCommands = {
     \ 'python': ['~/.local/bin/pyls'],
+    \ 'haskell': ['~/.local/bin/hie-wrapper'],
     \ }
 
 function LC_maps()
