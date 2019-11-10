@@ -82,3 +82,13 @@ else
     cd $HOME
 fi
 
+echo 'Installing common utilities...'
+sudo apt install vifm sxiv mupdf figlet toilet
+
+echo 'Install additional FIGlet fonts...'
+curl http://www.jave.de/figlet/figletfonts40.zip > ~/figletfonts.zip
+unzip ~/figletfonts.zip -d ~/figletfonts
+sudo mv -n ~/figletfonts/fonts/* /usr/share/figlet/
+rm -rf figletfonts
+rm figletfonts.zip
+
