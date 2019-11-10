@@ -13,7 +13,7 @@ set softtabstop=4  " Tabs/Spaces interop
 set expandtab      " Expands tab to spaces
 set nomodeline     " Disable as a security precaution
 set mouse=a        " Enable mouse mode
-set termguicolors  " Enable true colors
+set notermguicolors     " Disable true colors (urxvt fix)
 set autoindent     " Enable autoindent
 set complete-=i    " Better completion
 set laststatus=2   " Always show status line
@@ -33,14 +33,11 @@ call plug#begin('~/.vim/plugged')
 
 " Make sure you use single quotes
 Plug 'itchyny/lightline.vim'
+Plug 'chriskempson/base16-vim'
 Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
     \ }
-
-" Themes
-Plug 'flrnprz/plastic.vim'
-Plug 'Rigellute/rigel'
 
 call plug#end()
 
@@ -48,8 +45,11 @@ if !has('gui_running')
     set t_Co=256
 endif
 
-set background=dark
-colorscheme rigel
+" Sync with base16 shell color
+if filereadable(expand("~/.vimrc_background"))
+    let base16colorspace=256
+    source ~/.vimrc_background
+endif
 
 " Save your swp files to a less annoying place than the current directory.
 " If you have .vim-swap in the current directory, it'll use that.
@@ -64,7 +64,7 @@ set directory+=.
 
 " Lightline configuration
 let g:lightline = {
-    \ 'colorscheme': 'rigel',
+    \ 'colorscheme': 'one',
     \ }
 
 " Language client configuration

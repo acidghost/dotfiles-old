@@ -38,6 +38,8 @@ antigen bundle virtualenv
 antigen bundle web-search
 antigen bundle z
 
+antigen bundle chriskempson/base16-shell
+
 antigen theme romkatv/powerlevel10k
 
 antigen apply
@@ -48,8 +50,8 @@ antigen apply
 # dotfiles management
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
-export TERM=xterm-256color
 export EDITOR=vim
+export ZSH_TMUX_FIXTERM=true
 
 [[ -d ~/.local/bin ]] && export PATH="$PATH:$HOME/.local/bin"
 [[ -e ~/.path ]] && source ~/.path

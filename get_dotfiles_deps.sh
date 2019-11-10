@@ -39,3 +39,11 @@ else
     cd $HOME
 fi
 
+if [[ -d /opt/base16-xresources ]]; then
+    echo 'base16-xresources is already installed'
+else
+    echo 'Installing base16-xresources...'
+    sudo git clone https://github.com/binaryplease/base16-xresources.git \
+        /opt/base16-xresources
+fi
+

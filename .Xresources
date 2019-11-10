@@ -1,0 +1,7 @@
+#include "/opt/base16-xresources/xresources/base16-eighties-256.Xresources"
+
+!!! URxvt
+URxvt*depth: 32
+URxvt*scrollBar: false
+URxvt*cursorBlink: true
+URxvt*saveLines: 5000
