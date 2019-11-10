@@ -51,3 +51,13 @@ echo 'Installing xmonad + urxvt...'
 sudo apt install xmonad libghc-xmonad-dev libghc-xmonad-contrib-dev \
     suckless-tools rxvt-unicode
 
+if [[ -d /opt/lux ]]; then
+    echo 'lux is installed'
+else
+    sudo git clone https://github.com/Ventto/lux.git /opt/lux
+    cd /opt/lux
+    sudo make install
+    sudo lux -S 100%
+    cd $HOME
+fi
+
