@@ -27,3 +27,15 @@ pip3 install python-language-server \
     'python-language-server[yapf]' \
     'python-language-server[pyflakes]'
 
+if [[ -d /opt/neofetch ]]; then
+    echo 'neofetch is already installed'
+else
+    echo 'Installing neofetch...'
+    cd /opt
+    sudo git clone https://github.com/dylanaraps/neofetch.git
+    cd neofetch
+    sudo git checkout 6.1.0
+    sudo make install
+    cd $HOME
+fi
+
