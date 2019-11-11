@@ -84,12 +84,25 @@ else
     rustup component add rls rust-analysis rust-src
 fi
 
-echo 'Installing xmonad + urxvt...'
-sudo apt install xmonad libghc-xmonad-dev libghc-xmonad-contrib-dev \
+echo 'Installing xmonad deps + urxvt + feh + xscreensaver...'
+sudo apt install libx11-dev libxinerama-dev libxext-dev \
+    libxrandr-dev libxss-dev libxft-dev↑ \
     suckless-tools rxvt-unicode feh xscreensaver
 
-if [[ ! -e /usr/share/xsessions/xmonad-custom.desktop ]]; then
-    sudo cp ~/xmonad-custom.desktop /usr/share/xsessions/xmonad-custom.desktop
+if binary_exists xmonad; then
+    echo 'xmonad is already installed...'
+else
+    echo 'Installing xmonad...'
+    cd ~/.xmonad
+    git clone "https://github.com/xmonad/xmonad" xmonad-git
+    git clone "https://github.com/xmonad/xmonad-contrib" xmonad-contrib-git
+    stack init
+    stack install
+    cd $HOME
+fi
+
+if [[ ! -e /usr/share/xsessions/xmonad.desktop ]]; then
+    sudo cp ~/xmonad.desktop /usr/share/xsessions/xmonad.desktop
 fi
 
 if binary_exists xmobar; then

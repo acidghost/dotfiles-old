@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-sh ~/.fehbg
-
-xscreensaver -no-splash &
-
-exec xmonad

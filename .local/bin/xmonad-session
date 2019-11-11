@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [[ -f ~/.xmonad/xmonad-session-rc ]]; then
+    . ~/.xmonad/xmonad-session-rc
+fi
+
+exec xmonad
