@@ -10,3 +10,6 @@
 `dotfiles checkout`
 #### 4. Install dependencies
 `./install_dotfiles.sh`
+#### 5. Install `zsh`
+`sudo apt install zsh`
+#### 6. Logout / login from session
