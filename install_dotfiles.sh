@@ -2,6 +2,10 @@
 
 set -e
 
+binary_exists() {
+    hash $1 > /dev/null 2>&1
+}
+
 echo 'Installing some apt packages...'
 sudo apt install curl python3-pip python-pygments
 
@@ -47,7 +51,7 @@ else
         /opt/base16-xresources
 fi
 
-if [[ which stack 2>&1 /dev/null ]]; then
+if binary_exists stack; then
     echo "Haskell stack is installed"
 else
     echo "Installing Haskell's stack..."
@@ -62,6 +66,22 @@ else
     cd haskell-ide-engine
     stack ./install.hs stack-hie-8.6.5
     cd $HOME
+fi
+
+if binary_exists rustup; then
+    echo 'rustup is already installed...'
+else
+    echo 'Installing rustup...'
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    rustup update
+fi
+
+if binary_exists rls; then
+    echo 'Rust Language Server (RLS) is already installed'
+else
+    echo 'Installing Rust Language Server (RLS)...'
+    rustup update
+    rustup component add rls rust-analysis rust-src
 fi
 
 echo 'Installing xmonad + urxvt...'
@@ -89,6 +109,5 @@ echo 'Install additional FIGlet fonts...'
 curl http://www.jave.de/figlet/figletfonts40.zip > ~/figletfonts.zip
 unzip ~/figletfonts.zip -d ~/figletfonts
 sudo mv -n ~/figletfonts/fonts/* /usr/share/figlet/
-rm -rf figletfonts
-rm figletfonts.zip
+rm -rf ~/figletfonts ~/figletfonts.zip
 

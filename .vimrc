@@ -72,6 +72,7 @@ set hidden      " Required for operations modifying multiple buffers like rename
 let g:LanguageClient_serverCommands = {
     \ 'python': ['~/.local/bin/pyls'],
     \ 'haskell': ['~/.local/bin/hie-wrapper'],
+    \ 'rust': ['~/.cargo/bin/rls'],
     \ }
 
 function LC_maps()

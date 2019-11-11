@@ -54,6 +54,7 @@ export EDITOR=vim
 export ZSH_TMUX_FIXTERM=true
 
 [[ -d ~/.local/bin ]] && export PATH="$PATH:$HOME/.local/bin"
+[[ -d ~/.cargo/bin ]] && export PATH="$PATH:$HOME/.cargo/bin"
 [[ -e ~/.path ]] && source ~/.path
 
 # Aliases
