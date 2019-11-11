@@ -60,6 +60,14 @@ export ZSH_TMUX_FIXTERM=true
 # Aliases
 alias ta='tmux attach'
 alias tat='tmux attach -t'
+
 for i in `seq 10`; do
     alias "tree$i"="tree -L $i"
 done
+
+# Simple, handy commands. For bigger ones, use a separate file.
+
+export show_off() {
+    clear && python3 -c "print('\n' * 6)" && neofetch && python3 -c "print('\n' * 6)" 
+}
+
