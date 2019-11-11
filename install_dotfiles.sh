@@ -86,10 +86,19 @@ fi
 
 echo 'Installing xmonad + urxvt...'
 sudo apt install xmonad libghc-xmonad-dev libghc-xmonad-contrib-dev \
-    suckless-tools xmobar rxvt-unicode feh xscreensaver
+    suckless-tools rxvt-unicode feh xscreensaver
 
 if [[ ! -e /usr/share/xsessions/xmonad-custom.desktop ]]; then
     sudo cp ~/xmonad-custom.desktop /usr/share/xsessions/xmonad-custom.desktop
+fi
+
+if binary_exists xmobar; then
+    echo 'xmobar is already installed...'
+else
+    echo 'Installing xmobar...'
+    sudo apt install libasound2-dev libiw-dev libxpm-dev
+    git clone git://github.com/jaor/xmobar
+    stack install --flag xmobar:all_extensions
 fi
 
 if [[ -d /opt/lux ]]; then
