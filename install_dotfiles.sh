@@ -64,7 +64,8 @@ else
     echo 'Installing Haskell IDE Engine...'
     git clone https://github.com/haskell/haskell-ide-engine --recurse-submodules
     cd haskell-ide-engine
-    stack ./install.hs stack-hie-8.6.5
+    stack ./install.hs hie-8.6.5
+    stack ./install.hs build-data
     cd $HOME
 fi
 
@@ -111,16 +112,16 @@ if [[ ! -e /usr/share/xsessions/xmonad.desktop ]]; then
     sudo cp ~/xmonad.desktop /usr/share/xsessions/xmonad.desktop
 fi
 
-if binary_exists xmobar; then
+if binary_exists xmobar-top; then
     echo 'xmobar is already installed...'
 else
     echo 'Installing xmobar...'
-    sudo apt install libasound2-dev libiw-dev libxpm-dev
-    git clone git://github.com/jaor/xmobar
-    stack install --flag xmobar:all_extensions
+    cd .xmobar/xmobar-config
+    stack install
+    cd $HOME
 fi
 
-if [[ -d /opt/lux ]]; then
+if binary_exists lux; then
     echo 'lux is installed'
 else
     sudo git clone https://github.com/Ventto/lux.git /opt/lux

@@ -6,12 +6,12 @@ import           XMonad.Util.EZConfig           ( additionalKeys
                                                 , additionalKeysP
                                                 )
 import           System.IO
-import           Graphics.X11.ExtraTypes.XF86
+-- import           Graphics.X11.ExtraTypes.XF86
 
 main = do
-    xmproc <- spawnPipe "xmobar"
+    xmproc <- spawnPipe "xmobar-top"
     xmonad
-        $                 (myConfig xmproc)
+        $                 myConfig xmproc
         `additionalKeys`  myKeys
         `additionalKeysP` myKeysXF86
 
