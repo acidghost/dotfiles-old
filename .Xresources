@@ -1,6 +1,7 @@
-#include "/opt/base16-xresources/xresources/base16-eighties-256.Xresources"
+#include "/opt/base16-xresources/xresources/base16-pop-256.Xresources"
 
 !!! URxvt
+URxvt.font: xft:Hack:style=Regular:size=8
 URxvt.depth: 24
 URxvt.scrollBar: 0
 URxvt.cursorBlink: 1
