@@ -63,6 +63,7 @@ alias tat='tmux attach -t'
 
 for i in `seq 10`; do
     alias "tree$i"="tree -L $i"
+    alias "dh$i"="du -h -d $i"
 done
 
 # Simple, handy commands. For bigger ones, use a separate file.
