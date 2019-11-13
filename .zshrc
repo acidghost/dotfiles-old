@@ -68,6 +68,10 @@ done
 # Simple, handy commands. For bigger ones, use a separate file.
 
 export show_off() {
-    clear && python3 -c "print('\n' * 6)" && neofetch && python3 -c "print('\n' * 6)" 
+    clear && python3 -c "print('\n' * 6)" && neofetch $* && python3 -c "print('\n' * 6)"
+}
+
+export vusec_show_off() {
+    show_off --source ~/vusec.ascii --ascii_colors 0 1 2 3 4 5 6 7 8
 }
 
