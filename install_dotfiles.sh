@@ -95,15 +95,14 @@ if binary_exists xmonad; then
 else
     echo 'Installing xmonad...'
     cd ~/.xmonad
-    git clone "https://github.com/xmonad/xmonad" xmonad-git
-    cd xmonad-git
+    git clone "https://github.com/xmonad/xmonad"
+    cd xmonad
     git checkout v0.15
     cd ..
-    git clone "https://github.com/xmonad/xmonad-contrib" xmonad-contrib-git
-    cd xmonad-contrib-git
-    git checkout v0.15
+    git clone "https://github.com/xmonad/xmonad-contrib" xmonad-contrib
+    cd xmonad-contrib
+    git checkout v0.16
     cd ..
-    stack init
     stack install
     cd $HOME
 fi
