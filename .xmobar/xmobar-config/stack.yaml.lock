@@ -5,19 +5,19 @@
 
 packages:
 - completed:
-    size: 598612
-    url: https://github.com/jaor/xmobar/archive/acfee33a270e19e062c67db0d47e9d4244fd34e4.tar.gz
+    size: 598064
+    url: https://github.com/jaor/xmobar/archive/3105055dd2ff93b46e7e38a4bb697b284be338f3.tar.gz
     cabal-file:
-      size: 10784
-      sha256: a86757f82e35ef15113af01b79747a21385013c14e4752bac75773ccaa3f2f8f
+      size: 10783
+      sha256: 252de90a11a98dbb3df1b0f17e42f26c2eb2e00e703190bb7abcf97e1e0234ba
     name: xmobar
-    version: '0.31'
-    sha256: 7a16e35498d33415456efd7d1b2dfb713e217127271d4f79aaf3636a5d10329e
+    version: '0.30'
+    sha256: 53e1a43598e0b04e84ac49e6de74644668f9a88720e3ab793cd8f6af62a2db90
     pantry-tree:
-      size: 6787
-      sha256: 2dc1d666766036369aa08ec386cae26678012cc04cbe337926b284f564df85e0
+      size: 6733
+      sha256: 3f710c36018dc9de53e0acff900619916f98a6c6fbbf33dc79d3aa18e76c1fc9
   original:
-    url: https://github.com/jaor/xmobar/archive/acfee33a270e19e062c67db0d47e9d4244fd34e4.tar.gz
+    url: https://github.com/jaor/xmobar/archive/3105055dd2ff93b46e7e38a4bb697b284be338f3.tar.gz
 snapshots:
 - completed:
     size: 525663

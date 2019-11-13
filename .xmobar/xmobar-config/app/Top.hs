@@ -10,20 +10,20 @@ import           Xmobar                         ( xmobar
 import           Config
 import           Monitors
 
+
 main :: IO ()
 main = config >>= xmobar
   where
     config = configFromArgs $ baseConfig
-        { commands = [ Run (weather "EHAM")
+        { commands = [ Run StdinReader
                      , Run cpu
                      , Run memory
                      , Run swap
                      , Run date
-                     , Run StdinReader
                      , Run batt
                      ]
         , template =
             "|StdinReader| }{ \
             \|battery| |cpu| |memory| * |swap| \
-            \<fc=#00FF00>|date|</fc> |EHAM|"
+            \<fc=#00FF00>|date|</fc>"
         }

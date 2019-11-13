@@ -41,7 +41,7 @@ packages:
 #
 extra-deps:
 - github: jaor/xmobar
-  commit: acfee33a270e19e062c67db0d47e9d4244fd34e4
+  commit: 3105055dd2ff93b46e7e38a4bb697b284be338f3
 
 # Override default flag values for local packages and extra-deps
 flags:

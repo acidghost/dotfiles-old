@@ -9,16 +9,17 @@ import           Xmobar                         ( Config(..)
                                                 , XPosition(..)
                                                 )
 
-baseConfig = defaultConfig { bgColor         = "black"
-                           , fgColor         = "gray"
-                           , additionalFonts = ["xft:Symbola:size=10"]
-                           , border          = BottomB
-                           , borderColor     = "#0000FF"
-                           , position        = Top
-                           , lowerOnStart    = True
-                           , hideOnStart     = False
-                           , allDesktops     = True
-                           , persistent      = True
-                           , sepChar         = "|"
-                           , alignSep        = "}{"
+
+baseConfig = defaultConfig { bgColor      = "black"
+                           , fgColor      = "gray"
+                           , font = "xft:Hack:style=Regular:pixelsize=13"
+                           , border       = BottomB
+                           , borderColor  = "#0000FF"
+                           , position     = Top
+                           , lowerOnStart = True
+                           , hideOnStart  = False
+                           , allDesktops  = True
+                           , persistent   = True
+                           , sepChar      = "|"
+                           , alignSep     = "}{"
                            }
