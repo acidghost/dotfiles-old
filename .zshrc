@@ -71,6 +71,27 @@ alias xmobar_move_next="kill -USR1 \$(pidof $xmobar_bin)"
 alias xmobar_move_current="kill -USR2 \$(pidof $xmobar_bin)"
 unset xmobar_bin
 
+for f in /sys/bus/hid/drivers/razerkbd/*; do
+    if [[ -d "$f" ]] && [[ -f "$f/matrix_effect_static" ]]; then
+        _RZR_DBUS_DIR="$f"
+
+        rzr_brightness() {
+            if [[ -z "$1" ]]; then
+                cat "$_RZR_DBUS_DIR/matrix_brightness"
+            else
+                printf '%d' $1 > "$_RZR_DBUS_DIR/matrix_brightness"
+            fi
+        }
+
+        alias rzr_off="rzr_brightness 0"
+        alias rzr_default_fx="printf '\\x00\\xff\\x00' > $f/matrix_effect_static"
+        alias rzr_alert_fx="rzr_brightness 255 && printf '\\xff\\x00\\x00' > $f/matrix_effect_breath"
+
+        break
+    fi
+done
+unset f
+
 # Simple, handy commands. For bigger ones, use a separate file.
 
 export show_off() {
