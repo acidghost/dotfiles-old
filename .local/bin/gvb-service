@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+
+from datetime import time, datetime, timedelta
+from time import sleep
+import os
+
+TIME_FIRST = 15
+TIME_SECOND = 10
+
+TIMES = list(
+    map(lambda tpl: time(*tpl),
+        [(15, 17), (15, 32), (15, 47), (16, 2), (16, 17), (16, 33), (16, 48),
+         (17, 3), (17, 18), (17, 33), (17, 48), (18, 3), (18, 18), (18, 33),
+         (18, 48)]))
+
+
+def main():
+    try:
+        while True:
+            now = datetime.now().replace(second=0, microsecond=0)
+            now_min_first = (now + timedelta(seconds=TIME_FIRST * 60)).time()
+            now_min_second = (now + timedelta(seconds=TIME_SECOND * 60)).time()
+
+            departing = False
+            for t in TIMES:
+                notif = None
+                if t == now_min_first:
+                    notif = ('critical', TIME_FIRST)
+                elif t == now_min_second:
+                    notif = ('normal', TIME_SECOND)
+
+                if notif:
+                    departing = True
+                    l, m = notif
+                    os.system(
+                        f'notify-send -u {l} "There\'s a bus departing at {t} (in {m} minutes)"'
+                    )
+
+            if departing:
+                os.system('zsh -i -c rzr_alert_fx')
+
+            sleep(60)
+
+    except KeyboardInterrupt:
+        pass
+
+    os.system('zsh -i -c rzr_off')
+
+
+if __name__ == '__main__':
+    main()
