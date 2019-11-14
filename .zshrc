@@ -102,3 +102,21 @@ vusec_show_off() {
     show_off --source ~/vusec.ascii --ascii_colors 0 1 2 3 4 5 6 7 8
 }
 
+gvb_start() {
+    local pid_file="$HOME/.gvb-service.pid"
+    if [[ -f "$pid_file" ]]; then
+        echo 'GVB service is already running...'
+        return -1
+    fi
+    nohup gvb-service > "$HOME/.log/gvb-service.log" > /dev/null 2>&1 &
+    echo $! > "$pid_file"
+}
+
+gvb_stop() {
+    local pid_file="$HOME/.gvb-service.pid"
+    if [[ -f "$pid_file" ]]; then
+        kill -9 `cat "$pid_file"`
+        rm "$pid_file"
+    fi
+}
+
