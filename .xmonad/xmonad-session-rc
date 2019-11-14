@@ -15,3 +15,7 @@ xrandr \
 ~/.fehbg
 
 xscreensaver -no-splash &
+
+mkdir -p $HOME/.log
+
+nohup /usr/lib/notification-daemon/notification-daemon > $HOME/.log/notification-daemon.log &
