@@ -66,6 +66,11 @@ for i in `seq 10`; do
     alias "dh$i"="du -h -d $i"
 done
 
+local xmobar_bin='xmobar-top'
+alias xmobar_move_next="kill -USR1 \$(pidof $xmobar_bin)"
+alias xmobar_move_current="kill -USR2 \$(pidof $xmobar_bin)"
+unset xmobar_bin
+
 # Simple, handy commands. For bigger ones, use a separate file.
 
 export show_off() {
