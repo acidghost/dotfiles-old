@@ -1,0 +1,10 @@
+.local/bin/dmenu_aliases                linguist-language=Shell
+.local/bin/gvb-service                  linguist-language=Python
+.local/bin/xmonad-session               linguist-language=Shell
+
+.aliases                                linguist-language=Shell
+
+.xmonad/xmonad-session-rc               linguist-language=Shell
+.xmonad/build                           linguist-language=Shell
+
+.vimrc_background                       linguist-language=Vim script
