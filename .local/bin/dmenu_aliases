@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+cache=~/.cache/dmenu_aliases
+
+source ~/.aliases
+
+(compgen -a; compgen -c | grep -vxF "$(compgen -a)") | sort > $cache
+
+cmd=`cat $cache | dmenu $@`
+
+if ! [ -z "$cmd" ]; then
+    if [ -z "`compgen -a | grep $cmd`" ]; then
+        $cmd
+    else
+        # Get alias definition, strip first and last chars
+        cmdexec=$(alias | grep "${cmd/;/}=" | cut -d'=' -f2- | sed "s/^'//; s/'$//")
+        eval $cmdexec
+    fi
+fi
+
