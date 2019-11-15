@@ -1,3 +1,5 @@
+.config/neofetch/config.conf            linguist-language=Shell
+
 .local/bin/dmenu_aliases                linguist-language=Shell
 .local/bin/gvb-service                  linguist-language=Python
 .local/bin/xmonad-session               linguist-language=Shell
