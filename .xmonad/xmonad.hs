@@ -30,17 +30,20 @@ myConfig xmproc = def
 
 myMod = mod4Mask
 
-volumeUpdate n = spawn $ "pactl set-sink-volume 0 " ++ (sho n) ++ "%"
+dmenu cmd = spawn $ cmd ++ dmenuTheme
+    where dmenuTheme = " -nb '#000' -nf '#0f0' -sb '#b31e8d' -sf '#0f0'"
+
+volumeUpdate n = spawn $ "pactl set-sink-volume 0 " ++ sho n ++ "%"
   where
-    sho n | n > 0     = "+" ++ (show n)
+    sho n | n > 0     = "+" ++ show n
           | otherwise = show n
 
 volumeToggle = spawn "pactl set-sink-mute 0 toggle"
 
 myKeys =
     [ ((myMod .|. shiftMask, xK_z)         , spawn "xscreensaver-command -lock")
-    , ((myMod, xK_p)                       , spawn "dmenu_run")
-    , ((myMod .|. shiftMask, xK_p)         , spawn "dmenu_aliases")
+    , ((myMod, xK_p)                       , dmenu "dmenu_run")
+    , ((myMod .|. shiftMask, xK_p)         , dmenu "dmenu_aliases")
     , ((0, xF86XK_MonBrightnessUp)         , spawn "lux -a 10%")
     , ((0, xF86XK_MonBrightnessDown)       , spawn "lux -s 10%")
     , ((0, xF86XK_AudioLowerVolume)        , volumeUpdate (-10))
