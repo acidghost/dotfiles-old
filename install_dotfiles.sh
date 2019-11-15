@@ -64,8 +64,8 @@ else
     echo 'Installing Haskell IDE Engine...'
     git clone https://github.com/haskell/haskell-ide-engine --recurse-submodules
     cd haskell-ide-engine
-    stack ./install.hs hie-8.6.5
-    stack ./install.hs build-data
+    stack ./install.hs stack-hie-8.6.5
+    stack ./install.hs stack-build-data
     cd $HOME
 fi
 
