@@ -30,18 +30,22 @@ myConfig xmproc = def
 
 myMod = mod4Mask
 
+volumeUpdate n = spawn $ "pactl set-sink-volume 0 " ++ (sho n) ++ "%"
+  where
+    sho n | n > 0     = "+" ++ (show n)
+          | otherwise = show n
+
+volumeToggle = spawn "pactl set-sink-mute 0 toggle"
+
 myKeys =
-    [ ((myMod .|. shiftMask, xK_z)  , spawn "xscreensaver-command -lock")
-    , ((myMod .|. shiftMask, xK_p)  , spawn "dmenu_aliases")
-    , ((0, xF86XK_MonBrightnessUp)  , spawn "lux -a 10%")
-    , ((0, xF86XK_MonBrightnessDown), spawn "lux -s 10%")
-    , ((0, xF86XK_AudioLowerVolume) , spawn "pactl set-sink-volume 0 -10%")
-    , ( (shiftMask, xF86XK_AudioLowerVolume)
-      , spawn "pactl set-sink-volume 0 -1%"
-      )
-    , ((0, xF86XK_AudioRaiseVolume), spawn "pactl set-sink-volume 0 +10%")
-    , ( (shiftMask, xF86XK_AudioRaiseVolume)
-      , spawn "pactl set-sink-volume 0 +1%"
-      )
-    , ((0, xF86XK_AudioMute), spawn "pactl set-sink-mute 0 toggle")
+    [ ((myMod .|. shiftMask, xK_z)         , spawn "xscreensaver-command -lock")
+    , ((myMod, xK_p)                       , spawn "dmenu_run")
+    , ((myMod .|. shiftMask, xK_p)         , spawn "dmenu_aliases")
+    , ((0, xF86XK_MonBrightnessUp)         , spawn "lux -a 10%")
+    , ((0, xF86XK_MonBrightnessDown)       , spawn "lux -s 10%")
+    , ((0, xF86XK_AudioLowerVolume)        , volumeUpdate (-10))
+    , ((shiftMask, xF86XK_AudioLowerVolume), volumeUpdate (-1))
+    , ((0, xF86XK_AudioRaiseVolume)        , volumeUpdate 10)
+    , ((shiftMask, xF86XK_AudioRaiseVolume), volumeUpdate 1)
+    , ((0, xF86XK_AudioMute)               , volumeToggle)
     ]
