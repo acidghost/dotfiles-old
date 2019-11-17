@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+source ~/.aliases
+
+type_exists() {
+    type $1 > /dev/null 2>&1
+}
+
+if type_exists rzr_alert_fx; then
+    case $1 in
+        off)
+            rzr_default_fx
+            rzr_brightness 0
+            ;;
+        *)
+            rzr_alert_fx
+            rzr_brightness 255
+    esac
+fi
+
