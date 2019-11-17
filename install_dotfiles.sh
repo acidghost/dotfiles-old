@@ -131,11 +131,28 @@ else
 fi
 
 echo 'Installing common utilities...'
-sudo apt install vifm sxiv mupdf figlet toilet
+sudo apt install vifm sxiv zathura figlet toilet
 
 echo 'Install additional FIGlet fonts...'
 curl http://www.jave.de/figlet/figletfonts40.zip > ~/figletfonts.zip
 unzip ~/figletfonts.zip -d ~/figletfonts
 sudo mv -n ~/figletfonts/fonts/* /usr/share/figlet/
 rm -rf ~/figletfonts ~/figletfonts.zip
+
+if binary_exists dunst; then
+    echo 'dunst is already installed'
+else
+    echo 'Installing dunst dependencies...'
+    sudo apt install libdbus-1-dev libx11-dev libxinerama-dev libxrandr-dev \
+        libxss-dev libglib2.0-dev libpango1.0-dev libgtk-3-dev libxdg-basedir-dev \
+        libnotify-dev
+    echo 'Installing dunst...'
+    sudo git clone https://github.com/dunst-project/dunst.git /opt/dunst
+    cd /opt/dunst
+    sudo make
+    sudo make dunstify
+    sudo make install
+    sudo install -Dm755 dunstify /usr/local/bin/dunstify
+    cd $HOME
+fi
 
