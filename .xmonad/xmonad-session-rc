@@ -18,4 +18,4 @@ xscreensaver -no-splash &
 
 mkdir -p $HOME/.log
 
-nohup /usr/lib/notification-daemon/notification-daemon > $HOME/.log/notification-daemon.log &
+nohup dunst > $HOME/.logs/dunst.log &
