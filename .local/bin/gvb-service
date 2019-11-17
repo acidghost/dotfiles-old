@@ -3,6 +3,8 @@
 from datetime import time, datetime, timedelta
 from time import sleep
 import os
+import subprocess
+import sys
 
 TIME_FIRST = 15
 TIME_SECOND = 10
@@ -14,38 +16,53 @@ TIMES = list(
          (18, 48)]))
 
 
-def main():
+def notify(urg, t, in_t):
+    p = subprocess.run([
+        'dunstify', '-u', urg, '-a', 'GVB', '-A', 'stop,Stop service',
+        f'There is a bus departing at {t} (in {in_t} minutes)'
+    ],
+                       capture_output=True,
+                       text=True)
+    return p.stdout.strip() == 'stop'
+
+
+def main(pid_file):
     try:
         while True:
             now = datetime.now().replace(second=0, microsecond=0)
             now_min_first = (now + timedelta(seconds=TIME_FIRST * 60)).time()
             now_min_second = (now + timedelta(seconds=TIME_SECOND * 60)).time()
 
-            departing = False
+            departing = stopping = False
             for t in TIMES:
-                notif = None
+                stopping = False
                 if t == now_min_first:
-                    notif = ('critical', TIME_FIRST)
-                elif t == now_min_second:
-                    notif = ('normal', TIME_SECOND)
-
-                if notif:
+                    stopping = notify('critical', t, TIME_FIRST)
                     departing = True
-                    l, m = notif
-                    os.system(
-                        f'notify-send -u {l} "There\'s a bus departing at {t} (in {m} minutes)"'
-                    )
+                elif t == now_min_second:
+                    stopping = notify('normal', t, TIME_SECOND)
+                    departing = True
 
-            if departing:
-                os.system('zsh -i -c rzr_alert_fx')
+                if stopping:
+                    break
+
+            if stopping:
+                break
+            elif departing:
+                os.system('kbd_alert')
 
             sleep(60)
 
     except KeyboardInterrupt:
         pass
 
-    os.system('zsh -i -c rzr_off')
+    os.system('kbd_alert off')
+
+    try:
+        os.unlink(pid_file)
+    except FileNotFoundError:
+        pass
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1])

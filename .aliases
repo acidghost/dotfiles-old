@@ -49,7 +49,7 @@ gvb_start() {
         echo 'GVB service is already running...'
         return -1
     fi
-    nohup gvb-service > "$HOME/.log/gvb-service.log" > /dev/null 2>&1 &
+    nohup gvb-service $pid_file > "$HOME/.log/gvb-service.log" 2>&1 &
     echo $! > "$pid_file"
 }
 
