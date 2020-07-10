@@ -2,6 +2,10 @@
 alias ta='tmux attach'
 alias tat='tmux attach -t'
 
+alias e='$EDITOR'
+
+alias mouse-here='xdotool mousemove --window `xdotool getwindowfocus` 20 20'
+
 for i in `seq 10`; do
     alias "tree$i"="tree -L $i"
     alias "dh$i"="du -h -d $i"
@@ -12,7 +16,10 @@ alias xmobar_move_next="kill -USR1 \$(pidof $xmobar_bin)"
 alias xmobar_move_current="kill -USR2 \$(pidof $xmobar_bin)"
 unset xmobar_bin
 
-for f in /sys/bus/hid/drivers/razerkbd/*; do
+alias dzen-toggle="kill -USR1 \$(pidof dzen2)"
+# alias dzen-ungrab="kill -USR2 \$(pidof dzen2)"
+
+[[ -d "/sys/bus/hid/drivers/razerkbd" ]] && for f in /sys/bus/hid/drivers/razerkbd/*; do
     if [[ -d "$f" ]] && [[ -f "$f/matrix_effect_static" ]]; then
         _RZR_DBUS_DIR="$f"
 
@@ -32,6 +39,8 @@ for f in /sys/bus/hid/drivers/razerkbd/*; do
     fi
 done
 unset f
+
+alias rgrep='rgrep --color=auto -n'
 
 # Simple, handy commands. For bigger ones, use a separate file.
 
@@ -60,3 +69,48 @@ gvb_stop() {
         rm "$pid_file"
     fi
 }
+
+eecho() {
+    echo $@ 1>&2
+}
+
+nmcli_connect() {
+    local uuid=`nmcli -g connection.uuid c show "$1" 2>/dev/null`
+    [ -z "$uuid" ] && eecho "Cannot find UUID for '$1'" && return 1
+    nmcli connection up $uuid
+}
+
+md_read_as_html() {
+    pandoc -t html $1 | lynx -stdin
+}
+
+md_read_as_pdf() {
+    [ -e "$1" ] || { eecho "Not a file: $1" && return 1 }
+    local tmpf=`tempfile`
+    local tmpf_pdf="$tmpf.pdf"
+    pandoc -o $tmpf_pdf $1
+    cat $tmpf_pdf | zathura - &
+    rm $tmpf $tmpf_pdf
+}
+
+pdfread() {
+    nohup zathura "$1" > /dev/null &
+}
+
+picshow() {
+    nohup sxiv $@ > /dev/null &
+}
+
+find_by_name() {
+    local n="$1"
+    [ $# -gt 1 ] && local f="$2" || local f='.'
+    find "$f" -name "*$n*" -print
+}
+
+vusec_desk_setup() {
+    $HOME/.screenlayout/vusec-desk.sh
+    $HOME/.fehbg
+    lux -S 100% > /dev/null
+    vusec_show_off
+}
+
