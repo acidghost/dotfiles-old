@@ -172,9 +172,21 @@ pip3 install --user thefuck
 echo 'Installing virtualenvwrapper'
 pip3 install --user virtualenvwrapper
 
-echo 'Installing alacritty'
-wget 'https://github.com/alacritty/alacritty/releases/download/v0.4.3/Alacritty-v0.4.3-ubuntu_18_04_amd64.deb' \
-     -O Downloads/alacritty.deb
-sudo dpkg -i Downloads/alacritty.deb
-rm Downloads/alacritty.deb
+install_deb() {
+    local dest="$HOME/Downloads/$3.deb"
+    wget "https://github.com/$1/releases/download/$2.deb" -O "$dest"
+    sudo dpkg -i "$dest"
+    rm "$dest"
+}
 
+echo 'Installing alacritty'
+install_deb 'alacritty/alacritty' 'v0.4.3/Alacritty-v0.4.3-ubuntu_18_04_amd64' 'alacritty_0.4.3'
+
+echo 'Installing ripgrep'
+install_deb 'BurntSushi/ripgrep' '12.1.1/ripgrep_12.1.1_amd64' 'ripgrep_12.1.1'
+
+echo 'Installing fd'
+install_deb 'sharkdp/fd' 'v8.1.1/fd_8.1.1_amd64' 'fd_8.1.1'
+
+echo 'Installing bat'
+install_deb 'sharkdp/bat' 'v0.15.4/bat_0.15.4_amd64' 'bat_0.15.4'
