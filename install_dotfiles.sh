@@ -3,7 +3,7 @@
 set -e
 
 binary_exists() {
-    hash $1 > /dev/null 2>&1
+    hash "$1" > /dev/null 2>&1
 }
 
 echo 'Installing some apt packages...'
@@ -40,7 +40,7 @@ else
     cd neofetch
     sudo git checkout 6.1.0
     sudo make install
-    cd $HOME
+    cd "$HOME"
 fi
 
 if [[ -d /opt/base16-xresources ]]; then
@@ -66,7 +66,7 @@ else
     cd haskell-ide-engine
     stack ./install.hs stack-hie-8.6.5
     stack ./install.hs stack-build-data
-    cd $HOME
+    cd "$HOME"
 fi
 
 if binary_exists rustup; then
@@ -104,7 +104,7 @@ else
     git checkout v0.16
     cd ..
     stack install
-    cd $HOME
+    cd "$HOME"
 fi
 
 if [[ ! -e /usr/share/xsessions/xmonad.desktop ]]; then
@@ -117,7 +117,7 @@ else
     echo 'Installing xmobar...'
     cd .xmobar/xmobar-config
     stack install
-    cd $HOME
+    cd "$HOME"
 fi
 
 if binary_exists lux; then
@@ -127,7 +127,7 @@ else
     cd /opt/lux
     sudo make install
     sudo lux -S 100%
-    cd $HOME
+    cd "$HOME"
 fi
 
 echo 'Installing common utilities...'
@@ -153,7 +153,7 @@ else
     sudo make dunstify
     sudo make install
     sudo install -Dm755 dunstify /usr/local/bin/dunstify
-    cd $HOME
+    cd "$HOME"
 fi
 
 echo 'Installing resize-font extension for urxvt'
@@ -163,7 +163,7 @@ else
     cd ./.urxvt/ext
     git clone https://github.com/simmel/urxvt-resize-font.git
     ln -s urxvt-resize-font/resize-font resize-font
-    cd $HOME
+    cd "$HOME"
 fi
 
 echo 'Installing thefuck'
