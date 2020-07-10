@@ -13,7 +13,6 @@ set softtabstop=4  " Tabs/Spaces interop
 set expandtab      " Expands tab to spaces
 set nomodeline     " Disable as a security precaution
 set mouse=a        " Enable mouse mode
-set notermguicolors     " Disable true colors (urxvt fix)
 set autoindent     " Enable autoindent
 set complete-=i    " Better completion
 set laststatus=2   " Always show status line
@@ -26,6 +25,20 @@ set list           " Highlight non whitespace characters
 set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<
 set noshowmode     " Hide mode in bottom line given lightline
 
+" allow .vimrc files to reside in project folders
+set exrc
+set secure
+
+if exists('+termguicolors')
+    let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
+    "set termguicolors
+endif
+
+if $TERM == "rxvt-unicode-256color"
+    set notermguicolors     " Disable true colors (urxvt fix)
+endif
+
 " Specify a directory for plugins
 " - For Neovim: stdpath('data') . '/plugged'
 " - Avoid using standard Vim directory names like 'plugin'
@@ -34,12 +47,18 @@ call plug#begin('~/.vim/plugged')
 " Make sure you use single quotes
 Plug 'itchyny/lightline.vim'
 Plug 'chriskempson/base16-vim'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
     \ }
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'scrooloose/nerdTree'
+Plug 'machakann/vim-sandwich'
+Plug 'tpope/vim-obsession'
+Plug 'dhruvasagar/vim-prosession'
+Plug 'cespare/vim-toml'
 
 call plug#end()
 
@@ -66,16 +85,35 @@ set directory+=.
 
 " Lightline configuration
 let g:lightline = {
-    \ 'colorscheme': 'one',
+    \ 'colorscheme': 'deus',
+    \ 'active': {
+    \   'left': [ [ 'mode', 'paste' ],
+    \             [ 'readonly', 'filename', 'modified' ],
+    \             [ 'obsession' ] ]
+    \ },
+    \ 'component': {
+    \   'obsession': '%{ObsessionStatus("", "")}',
+    \ },
     \ }
 
 " Language client configuration
 set hidden      " Required for operations modifying multiple buffers like rename.
 let g:LanguageClient_serverCommands = {
     \ 'python': ['~/.local/bin/pyls'],
-    \ 'haskell': ['~/.local/bin/hie-wrapper'],
     \ 'rust': ['~/.cargo/bin/rls'],
+    \ 'cpp': ['clangd-9'],
+    \ 'c': ['clangd-9'],
+    \ 'haskell': ['hie-wrapper', '--lsp'],
     \ }
+
+" deoplete
+let g:deoplete#enable_at_startup = 1
+set completeopt-=preview
+
+" Prosession config
+let g:prosession_tmux_title = 1
+let g:prosession_tmux_title_format = ":@@@"
+let g:prosession_on_startup = 1
 
 " FZF
 command! -bang -nargs=* RgPreview
@@ -85,6 +123,28 @@ command! -bang -nargs=* RgPreview
 
 """ Key mappings
 let mapleader = ","
+
+" Yank to PRIMARY clipboard
+noremap <Leader>y "*y
+" Paste from PRIMARY clipboard
+noremap <Leader>p "*p
+" Yank to CLIPBOARD clipboard
+noremap <Leader>Y "+y
+" Paste from CLIPBOARD clipboard
+noremap <Leader>P "+p
+
+" Navigate quickfix list
+noremap <Leader>eo :botright copen<CR>
+noremap <Leader>ef :cfirst<CR>
+noremap <Leader>en :cnext<CR>
+noremap <Leader>ep :cprevious<CR>
+
+nmap <Down> <C-E>
+nmap <Up> <C-Y>
+nmap <Left> 20zl
+nmap <Right> 20zr
+
+nmap <C-n> :NERDTreeToggle<CR>
 
 nmap <C-p> :FZF<CR>
 nmap <S-p> :FZF!<CR>
@@ -96,6 +156,12 @@ nmap <Leader>c :GFiles?<CR>
 nmap <Leader>b :Buffers<CR>
 cmap <C-r> :History:<CR>
 nmap <C-h> :Helptags<CR>
+
+nmap <C-s> :Obsession<CR>
+nmap <C-s>s :Prosession<Space>
+nmap <C-s>d :ProsessionDelete<CR>
+
+noremap @ :nohl<CR>
 
 function LC_maps()
     if has_key(g:LanguageClient_serverCommands, &filetype)
@@ -113,3 +179,13 @@ function LC_maps()
 endfunction
 
 autocmd FileType * call LC_maps()
+
+autocmd BufRead,BufNewFile $HOME/.aliases set ft=sh
+autocmd BufRead,BufNewFile $HOME/.path set ft=sh
+autocmd BufRead,BufNewFile *.fc set ft=fennec
+autocmd BufRead,BufNewFile *.ll set ft=llvm
+autocmd BufRead,BufNewFile *.td set ft=tablegen
+autocmd BufRead,BufNewFile *.rasi setf css
+
+autocmd FileType go setlocal shiftwidth=4 tabstop=4 noexpandtab
+autocmd FileType cpp setlocal shiftwidth=2 tabstop=2
