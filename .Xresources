@@ -1,7 +1,12 @@
 #include "/opt/base16-xresources/xresources/base16-pop-256.Xresources"
 
+*.font: Hack Nerd Font Mono:style=Regular:pixelsize=12
+! *.font: xft:Noto Sans:style=Regular:pixelsize=12:size=8
+
+! dzen2.font: xft:FreeMono:style=Regular:size=8
+
 !!! URxvt
-URxvt.font: xft:Hack:style=Regular:size=8
+URxvt.font: xft:Hack Nerd Font Mono:style=Regular:pixelsize=12
 URxvt.depth: 24
 URxvt.scrollBar: 0
 URxvt.cursorBlink: 1
@@ -30,9 +35,19 @@ URxvt.secondaryScroll: 0
 URxvt.secondaryWheel: 1
 
 ! Perl extensions configuration
-URxvt.perl-ext-common: default,matcher
+URxvt.perl-ext-common: default,matcher,resize-font
 URxvt.url-launcher: google-chrome
 URxvt.matcher.button: 1
 
 URxvt.keysym.C-Delete: perl:matcher:last
 URxvt.keysym.M-Delete: perl:matcher:list
+
+URxvt.keysym.M-l: command:\033c
+
+URxvt.keysym.C-minus:     resize-font:smaller
+URxvt.keysym.C-plus:      resize-font:bigger
+URxvt.keysym.C-equal:     resize-font:reset
+URxvt.keysym.C-question:  resize-font:show
+
+xmessage*Scrollbar.width: 8
+xmessage*Scrollbar.borderwidth: 1

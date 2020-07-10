@@ -156,3 +156,13 @@ else
     cd $HOME
 fi
 
+echo 'Installing resize-font extension for urxvt'
+if [ -e './.urxvt/ext/resize-font' ]; then
+    echo 'resuze-font is already installed'
+else
+    cd ./.urxvt/ext
+    git clone https://github.com/simmel/urxvt-resize-font.git
+    ln -s urxvt-resize-font/resize-font resize-font
+    cd $HOME
+fi
+
