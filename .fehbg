@@ -1,2 +1,2 @@
 #!/bin/sh
-'feh' '--bg-fill' 'wallpapers/Nintendo_Classic_Mini_Super_NES.jpg' 
+'feh' '--bg-max' '/home/acidghost/wallpapers/20th_artbook_collage.jpg' 
