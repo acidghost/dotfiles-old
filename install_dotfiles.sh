@@ -172,3 +172,9 @@ pip3 install --user thefuck
 echo 'Installing virtualenvwrapper'
 pip3 install --user virtualenvwrapper
 
+echo 'Installing alacritty'
+wget 'https://github.com/alacritty/alacritty/releases/download/v0.4.3/Alacritty-v0.4.3-ubuntu_18_04_amd64.deb' \
+     -O Downloads/alacritty.deb
+sudo dpkg -i Downloads/alacritty.deb
+rm Downloads/alacritty.deb
+
