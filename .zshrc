@@ -19,6 +19,19 @@ compinit
 # End of lines added by compinstall
 
 
+autoload -U zmv
+
+
+forgit_log=fglo
+forgit_diff=fgd
+forgit_add=fga
+forgit_reset_head=fgrh
+forgit_ignore=fgi
+forgit_restore=fgcf
+forgit_clean=fgclean
+forgit_stash_show=fgss
+
+
 source ~/antigen.zsh
 
 antigen use oh-my-zsh
@@ -42,6 +55,8 @@ antigen bundle chriskempson/base16-shell
 
 antigen theme romkatv/powerlevel10k
 
+antigen bundle wfxr/forgit
+
 antigen apply
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -59,3 +74,55 @@ export ZSH_TMUX_FIXTERM=true
 
 [[ -e ~/.aliases ]] && source ~/.aliases
 
+export VIRTUALENVWRAPPER_PYTHON=`which python3`
+export VIRTUALENVWRAPPER_VIRTUALENV=`which virtualenv`
+source ~/.local/bin/virtualenvwrapper_lazy.sh
+
+# opam configuration
+test -r /home/acidghost/.opam/opam-init/init.zsh && . /home/acidghost/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+
+# bat
+export BAT_THEME=base16
+export BAT_STYLE=numbers,grid
+
+# FZF
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
+export FZF_TMUX=1
+export FZF_DEFAULT_COMMAND="fd --type f"
+
+_fzf_compgen_path() {
+  fd --hidden --follow --exclude ".git" . "$1"
+}
+
+_fzf_compgen_dir() {
+  fd --type d --hidden --follow --exclude ".git" . "$1"
+}
+
+_fzf_comprun() {
+  local command=$1
+  shift
+
+  case "$command" in
+    cd)           fzf "$@" --preview 'tree -C {} | head -200' ;;
+    export|unset) fzf "$@" --preview "eval 'echo \$'{}" "$@" ;;
+    ssh)          fzf "$@" --preview 'dig {}' ;;
+    $EDITOR)      fzf "$@" --preview 'bat --color always -p {}' ;;
+    *)            fzf "$@" ;;
+  esac
+}
+
+_z_jump() {
+    local res
+    res=`_z -l 2>&1 | fzf --tac --preview 'tree {}' --reverse`
+    [ $? -eq 0 ] && {
+        local p=`echo -n "$res" | sed 's/^[0-9]*\.*[0-9]*[[:space:]]*\/\(.*\)$/\/\1/'`
+        zle reset-prompt
+        LBUFFER+="cd $p"
+    }
+}
+zle     -N   _z_jump
+bindkey '^j' _z_jump
+
+eval $(thefuck --alias)
+
+export QT_QPA_PLATFORMTHEME=qt5ct

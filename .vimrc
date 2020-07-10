@@ -38,6 +38,8 @@ Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
     \ }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
 call plug#end()
 
@@ -75,11 +77,38 @@ let g:LanguageClient_serverCommands = {
     \ 'rust': ['~/.cargo/bin/rls'],
     \ }
 
+" FZF
+command! -bang -nargs=* RgPreview
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
+
+""" Key mappings
+let mapleader = ","
+
+nmap <C-p> :FZF<CR>
+nmap <S-p> :FZF!<CR>
+nmap <Leader>f :RgPreview<Space>
+nmap <Leader>F :RgPreview!<Space>
+nmap <Leader>g :GFiles<CR>
+nmap <Leader>G :GFiles!<CR>
+nmap <Leader>c :GFiles?<CR>
+nmap <Leader>b :Buffers<CR>
+cmap <C-r> :History:<CR>
+nmap <C-h> :Helptags<CR>
+
 function LC_maps()
     if has_key(g:LanguageClient_serverCommands, &filetype)
-        nnoremap <buffer> <silent> K :call LanguageClient#textDocument_hover()<cr>
-        nnoremap <buffer> <silent> gd :call LanguageClient#textDocument_definition()<CR>
-        nnoremap <buffer> <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+        nnoremap <leader>ld :call LanguageClient#textDocument_definition()<CR>
+        nnoremap <leader>lr :call LanguageClient#textDocument_rename()<CR>
+        nnoremap <leader>lf :call LanguageClient#textDocument_formatting()<CR>
+        nnoremap <leader>lt :call LanguageClient#textDocument_typeDefinition()<CR>
+        nnoremap <leader>lx :call LanguageClient#textDocument_references()<CR>
+        nnoremap <leader>la :call LanguageClient_workspace_applyEdit()<CR>
+        nnoremap <leader>lc :call LanguageClient#textDocument_completion()<CR>
+        nnoremap <leader>lh :call LanguageClient#textDocument_hover()<CR>
+        nnoremap <leader>ls :call LanguageClient_textDocument_documentSymbol()<CR>
+        nnoremap <leader>lm :call LanguageClient_contextMenu()<CR>
     endif
 endfunction
 

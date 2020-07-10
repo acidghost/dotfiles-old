@@ -7,7 +7,7 @@ binary_exists() {
 }
 
 echo 'Installing some apt packages...'
-sudo apt install curl python3-pip python-pygments
+sudo apt install curl python3-pip python-pygments python3-dev python3-setuptools
 
 # Install Antigen (zsh plugin manager)
 if [[ -e ~/antigen.zsh ]]; then
@@ -165,4 +165,10 @@ else
     ln -s urxvt-resize-font/resize-font resize-font
     cd $HOME
 fi
+
+echo 'Installing thefuck'
+pip3 install --user thefuck
+
+echo 'Installing virtualenvwrapper'
+pip3 install --user virtualenvwrapper
 
