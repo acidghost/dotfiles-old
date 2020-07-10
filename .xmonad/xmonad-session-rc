@@ -2,20 +2,15 @@
 
 xrdb -merge ~/.Xresources
 
-xrandr \
-    --output HDMI-0 \
-        --mode 1920x1080 \
-        --primary \
-        --auto \
-    --output eDP-1-1 \
-        --mode 1920x1080 \
-        --right-of HDMI-0 \
-        --auto
+~/.screenlayout/vusec-desk.sh
 
 ~/.fehbg
 
 xscreensaver -no-splash &
 
+setxkbmap -option 'compose:ralt'
+
 mkdir -p $HOME/.log
 
-nohup dunst > $HOME/.logs/dunst.log &
+nohup dunst > $HOME/.log/dunst.log &
+
