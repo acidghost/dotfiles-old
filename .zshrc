@@ -50,7 +50,7 @@ antigen apply
 # dotfiles management
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
-export EDITOR=vim
+export EDITOR=nvim
 export ZSH_TMUX_FIXTERM=true
 
 [[ -d ~/.local/bin ]] && export PATH="$PATH:$HOME/.local/bin"
