@@ -32,7 +32,7 @@ forgit_clean=fgclean
 forgit_stash_show=fgss
 
 
-source ~/antigen.zsh
+source ~/antigen/antigen.zsh
 
 antigen use oh-my-zsh
 
