@@ -82,7 +82,7 @@ source ~/.local/bin/virtualenvwrapper_lazy.sh
 test -r /home/acidghost/.opam/opam-init/init.zsh && . /home/acidghost/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
 
 # bat
-export BAT_THEME=base16
+export BAT_THEME=base16-256
 export BAT_STYLE=numbers,grid
 
 # FZF
