@@ -83,6 +83,9 @@ set directory+=~/.vim/swap//
 set directory+=~/tmp//
 set directory+=.
 
+" Alternative ctags filename
+set tags+=.tags
+
 " Lightline configuration
 let g:lightline = {
     \ 'colorscheme': 'deus',
@@ -147,6 +150,7 @@ nmap <Right> 20zr
 nmap <C-n> :NERDTreeToggle<CR>
 
 nmap <C-p> :FZF<CR>
+nmap <C-t> :Tags<CR>
 nmap <S-p> :FZF!<CR>
 nmap <Leader>f :RgPreview<Space>
 nmap <Leader>F :RgPreview!<Space>
