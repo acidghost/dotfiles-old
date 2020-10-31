@@ -8,7 +8,9 @@ xrdb -merge ~/.Xresources
 
 xscreensaver -no-splash &
 
-setxkbmap -option 'compose:ralt'
+setxkbmap -layout 'us,it,apl' \
+    -variant 'dyalog' \
+    -option 'grp:menu_toggle,grp_led:scroll,compose:ralt'
 
 mkdir -p $HOME/.log
 
