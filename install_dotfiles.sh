@@ -131,7 +131,7 @@ else
 fi
 
 echo 'Installing common utilities...'
-sudo apt install vifm sxiv zathura figlet toilet
+sudo apt install vifm sxiv zathura figlet toilet gawk
 
 echo 'Install additional FIGlet fonts...'
 curl http://www.jave.de/figlet/figletfonts40.zip > ~/figletfonts.zip
