@@ -192,6 +192,14 @@ autocmd BufRead,BufNewFile *.fc set ft=fennec
 autocmd BufRead,BufNewFile *.ll set ft=llvm
 autocmd BufRead,BufNewFile *.td set ft=tablegen
 autocmd BufRead,BufNewFile *.rasi setf css
+autocmd BufRead,BufNewFile Vagrantfile setf ruby
 
 autocmd FileType go setlocal shiftwidth=4 tabstop=4 noexpandtab
 autocmd FileType cpp setlocal shiftwidth=2 tabstop=2
+autocmd FileType cmake setlocal shiftwidth=2 tabstop=2
+autocmd FileType org setlocal shiftwidth=2 tabstop=2
+
+" Useful utilities
+
+command DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_
+        \ | diffthis | wincmd p | diffthis
