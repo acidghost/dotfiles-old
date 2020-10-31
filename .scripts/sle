@@ -1,0 +1,97 @@
+#!/usr/bin/gawk -f
+
+@include "colors.awk"
+
+BEGIN {
+    LINT="fatal"
+
+    # TODO: getopt to parse some command line options?
+
+    # decrements color wheel pointer, allowing for the next child to take
+    # the previously used color right away
+    REPLACE=0
+    # removes consecutive duplicates (modulo timestamp)
+    COMPACT=1
+
+    prev_line = ""
+    color_wheel_idx = 0
+    color_wheel[color_wheel_idx++] = GREEN
+    color_wheel[color_wheel_idx++] = YELLOW
+    color_wheel[color_wheel_idx++] = BLUE
+    color_wheel[color_wheel_idx++] = RED
+    color_wheel[color_wheel_idx++] = CYAN
+    color_wheel[color_wheel_idx++] = MAGENTA
+    color_wheel[color_wheel_idx++] = BGREEN
+    color_wheel[color_wheel_idx++] = BYELLOW
+    color_wheel[color_wheel_idx++] = BBLUE
+    color_wheel[color_wheel_idx++] = BRED
+    color_wheel[color_wheel_idx++] = BCYAN
+    color_wheel[color_wheel_idx++] = BMAGENTA
+
+    root_color = color_wheel[0]
+    color_wheel_idx = 1
+    skipped = 0
+}
+
+{
+    if (COMPACT) {
+        # skip duplicate lines; removes timestamp first
+        no_time = $0
+        sub(/[[:blank:]]+[[:digit:]:\.]+[[:blank:]]+/, " ", no_time)
+        if (no_time == prev_line) {
+            prev_line = no_time
+            skipped++
+            next
+        }
+
+        if (skipped > 0) {
+            printf "[...%d lines skipped]\n", skipped
+        }
+
+        skipped = 0
+        prev_line = no_time
+    }
+
+    # highlight errors
+    $0 = gensub(/ (E[A-Z]{3,} \([[:alnum:][:punct:][:blank:]]+\))/, " " BRED "\\1" COLNONE, "g")
+
+    # match fork or clone calls and parse new PID
+    pid = $1
+    if (match($0, /(fork\(\))|(clone\(.+\))[[:blank:]]+=[[:blank:]]+([[:digit:]]+)$/, matches) > 0) {
+        child_pid = matches[3]
+        colors[child_pid] = color_wheel[color_wheel_idx]
+        color_wheel_idx = (color_wheel_idx + 1) % length(color_wheel)
+        if (pid in parents) {
+            parents[child_pid] = pid " < " parents[pid]
+        } else {
+            parents[child_pid] = pid
+        }
+    }
+
+    # replace PID with parents list
+    if (pid in parents) {
+        $1 = colors[pid] pid " < " parents[pid] COLNONE
+    } else {
+        $1 = root_color pid COLNONE
+    }
+
+    # highlight timestamp and move it to the beginning of the record
+    time = BOLD BCKWHITE BLACK $2 COLNONE
+    $2 = $1
+    $1 = time
+
+    print
+}
+
+/\+{3} [[:alnum:][:blank:]]+ \+{3}$/ {
+    if (pid in parents) {
+        delete parents[pid]
+        if (REPLACE) {
+            if (color_wheel_idx == 0) {
+                color_wheel_idx = length(color_wheel)
+            } else {
+                color_wheel_idx--
+            }
+        }
+    }
+}
