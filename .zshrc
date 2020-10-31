@@ -71,6 +71,8 @@ export ZSH_TMUX_FIXTERM=true
 [[ -d ~/.local/bin ]] && export PATH="$PATH:$HOME/.local/bin"
 [[ -d ~/.cargo/bin ]] && export PATH="$PATH:$HOME/.cargo/bin"
 [[ -e ~/.path ]] && source ~/.path
+export PATH="$HOME/.scripts:$PATH"
+export AWKPATH="$HOME/.scripts/awk:$AWKPATH"
 
 [[ -e ~/.aliases ]] && source ~/.aliases
 
