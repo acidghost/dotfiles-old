@@ -1,2 +1,2 @@
 #!/bin/sh
-'feh' '--bg-max' '/home/acidghost/wallpapers/20th_artbook_collage.jpg' 
+feh --no-fehbg --bg-max '/home/acidghost/wallpapers/20th_artbook_collage.jpg' 
