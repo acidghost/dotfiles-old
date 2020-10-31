@@ -165,16 +165,18 @@ noremap @ :nohl<CR>
 
 function LC_maps()
     if has_key(g:LanguageClient_serverCommands, &filetype)
-        nnoremap <leader>ld :call LanguageClient#textDocument_definition()<CR>
-        nnoremap <leader>lr :call LanguageClient#textDocument_rename()<CR>
-        nnoremap <leader>lf :call LanguageClient#textDocument_formatting()<CR>
-        nnoremap <leader>lt :call LanguageClient#textDocument_typeDefinition()<CR>
-        nnoremap <leader>lx :call LanguageClient#textDocument_references()<CR>
-        nnoremap <leader>la :call LanguageClient_workspace_applyEdit()<CR>
-        nnoremap <leader>lc :call LanguageClient#textDocument_completion()<CR>
-        nnoremap <leader>lh :call LanguageClient#textDocument_hover()<CR>
-        nnoremap <leader>ls :call LanguageClient_textDocument_documentSymbol()<CR>
-        nnoremap <leader>lm :call LanguageClient_contextMenu()<CR>
+        nmap <silent><leader>ld <Plug>(lcn-definition)
+        nmap <silent><leader>lr <Plug>(lcn-rename)
+        nmap <silent><leader>lf <Plug>(lcn-format)
+        nmap <silent><leader>lt <Plug>(lcn-type-definition)
+        nmap <silent><leader>lx <Plug>(lcn-references)
+        " nnoremap <leader>la :call LanguageClient_workspace_applyEdit()<CR>
+        nmap <silent><leader>la <Plug>(lcn-code-action)
+        nmap <silent><leader>lc :call LanguageClient#textDocument_completion()<CR>
+        nmap <silent><leader>lh <Plug>(lcn-hover)
+        nmap <silent><leader>ls <Plug>(lcn-symbols)
+        nmap <silent><leader>lm <Plug>(lcn-menu)
+        nmap <silent><leader>le <Plug>(lcn-explain-error)
     endif
 endfunction
 
