@@ -1,4 +1,5 @@
 import qualified Data.Map                      as M
+import           Data.List                     ( elemIndex )
 import           XMonad
 import           XMonad.Actions.DynamicWorkspaces
 import           XMonad.Actions.DynamicWorkspaceOrder
@@ -157,6 +158,24 @@ getWorkspacesA = do
     sort <- getSortByOrder
     return $ map W.tag $ sort $ W.workspaces ws
 
+data IterWorkspacesDir = NextWorkspace | PrevWorkspace deriving(Eq)
+
+getNextWorkspace :: IterWorkspacesDir -> X WorkspaceId
+getNextWorkspace dir = do
+    ws <- gets windowset
+    sort <- getSortByOrder
+    let sorted = map W.tag $ sort $ W.workspaces ws
+        current = W.currentTag ws
+        curIdx = elemIndex current sorted
+    return $ case curIdx of
+        (Just c) -> sorted !! (moveIt c (length sorted))
+        _        -> current
+    where
+        moveIt c max
+            | dir == NextWorkspace = (c + 1) `mod` max
+            | dir == PrevWorkspace && c == 0 = max - 1
+            | otherwise = c - 1
+
 myKeys conf@(XConfig { XMonad.modMask = modMask }) =
     M.fromList
         $
@@ -218,6 +237,12 @@ myKeys conf@(XConfig { XMonad.modMask = modMask }) =
              ) -- clean up all hidden, empty, temporary workspaces
            , ( (modMask .|. shiftMask, xK_v)
              , withWorkspace def $ windows . W.shift
+             )
+           , ( (modMask, xK_Page_Up)
+             , (getNextWorkspace NextWorkspace) >>= (windows . W.greedyView)
+             )
+           , ( (modMask, xK_Page_Down)
+             , (getNextWorkspace PrevWorkspace) >>= (windows . W.greedyView)
              )
 
     -- resizing the master/slave ratio
