@@ -20,6 +20,7 @@ case "$prog" in
     meson|cmake|make                ) echo -n "" ;;
     ninja                           ) echo -n "ﱲ" ;;
     docker*                         ) echo -n "" ;;
+    vagrant                         ) echo -n "" ;;
     sqlite*                         ) echo -n "" ;;
     *mysql*                         ) echo -n "" ;;
     *postgres*                      ) echo -n "" ;;
@@ -27,6 +28,9 @@ case "$prog" in
     *top                            ) echo -n "ﱨ" ;;
     *pdf*|zathura|okular            ) echo -n "" ;;
     lynx                            ) echo -n "" ;;
+    ssh                             ) echo -n "" ;;
+    scheme|petite                   ) echo -n "λ" ;;
+    ghc*|stack                      ) echo -n "" ;;
     *                               ) echo -n "" ;;
 esac
 
