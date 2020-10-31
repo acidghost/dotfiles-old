@@ -58,14 +58,16 @@ else
     curl -sSL https://get.haskellstack.org/ | sh
 fi
 
-if [[ -e ~/.local/bin/hie-wrapper ]]; then
-    echo 'Haskell IDE Engine already installed'
+if [[ -e ~/.local/bin/haskell-language-server-wrapper ]]; then
+    echo 'Haskell Language Server already installed'
 else
-    echo 'Installing Haskell IDE Engine...'
-    git clone https://github.com/haskell/haskell-ide-engine --recurse-submodules
-    cd haskell-ide-engine
-    stack ./install.hs stack-hie-8.6.5
-    stack ./install.hs stack-build-data
+    echo 'Installing Haskell Language Server...'
+    mkdir -p "$HOME/oss"
+    cd "$HOME/oss"
+    git clone https://github.com/haskell/haskell-language-server.git --recurse-submodules
+    cd haskell-language-server
+    stack ./install.hs hls-8.6.5
+    stack ./install.hs data
     cd "$HOME"
 fi
 
