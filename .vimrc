@@ -104,9 +104,9 @@ set hidden      " Required for operations modifying multiple buffers like rename
 let g:LanguageClient_serverCommands = {
     \ 'python': ['~/.local/bin/pyls'],
     \ 'rust': ['~/.cargo/bin/rls'],
-    \ 'cpp': ['clangd-9'],
-    \ 'c': ['clangd-9'],
-    \ 'haskell': ['hie-wrapper', '--lsp'],
+    \ 'cpp': ['clangd-10'],
+    \ 'c': ['clangd-10'],
+    \ 'haskell': ['haskell-language-server-wrapper', '--lsp'],
     \ }
 
 " deoplete
