@@ -1,6 +1,6 @@
 #!/usr/bin/gawk -f
 
-@include "colors.awk"
+@include "color.awk"
 
 BEGIN {
     LINT="fatal"
@@ -15,18 +15,18 @@ BEGIN {
 
     prev_line = ""
     color_wheel_idx = 0
-    color_wheel[color_wheel_idx++] = GREEN
-    color_wheel[color_wheel_idx++] = YELLOW
-    color_wheel[color_wheel_idx++] = BLUE
-    color_wheel[color_wheel_idx++] = RED
-    color_wheel[color_wheel_idx++] = CYAN
-    color_wheel[color_wheel_idx++] = MAGENTA
-    color_wheel[color_wheel_idx++] = BGREEN
-    color_wheel[color_wheel_idx++] = BYELLOW
-    color_wheel[color_wheel_idx++] = BBLUE
-    color_wheel[color_wheel_idx++] = BRED
-    color_wheel[color_wheel_idx++] = BCYAN
-    color_wheel[color_wheel_idx++] = BMAGENTA
+    color_wheel[color_wheel_idx++] = color::green
+    color_wheel[color_wheel_idx++] = color::yellow
+    color_wheel[color_wheel_idx++] = color::blue
+    color_wheel[color_wheel_idx++] = color::red
+    color_wheel[color_wheel_idx++] = color::cyan
+    color_wheel[color_wheel_idx++] = color::magenta
+    color_wheel[color_wheel_idx++] = color::bri_green
+    color_wheel[color_wheel_idx++] = color::bri_yellow
+    color_wheel[color_wheel_idx++] = color::bri_blue
+    color_wheel[color_wheel_idx++] = color::bri_red
+    color_wheel[color_wheel_idx++] = color::bri_cyan
+    color_wheel[color_wheel_idx++] = color::bri_magenta
 
     root_color = color_wheel[0]
     color_wheel_idx = 1
@@ -53,7 +53,7 @@ BEGIN {
     }
 
     # highlight errors
-    $0 = gensub(/ (E[A-Z]{3,} \([[:alnum:][:punct:][:blank:]]+\))/, " " BRED "\\1" COLNONE, "g")
+    $0 = gensub(/ (E[A-Z]{3,} \([[:alnum:][:punct:][:blank:]]+\))/, " " color::ize(color::bri_red, "\\1"), "g")
 
     # match fork or clone calls and parse new PID
     pid = $1
@@ -70,13 +70,13 @@ BEGIN {
 
     # replace PID with parents list
     if (pid in parents) {
-        $1 = colors[pid] pid " < " parents[pid] COLNONE
+        $1 = color::ize(colors[pid], pid " < " parents[pid])
     } else {
-        $1 = root_color pid COLNONE
+        $1 = color::ize(root_color, pid)
     }
 
     # highlight timestamp and move it to the beginning of the record
-    time = BOLD BCKWHITE BLACK $2 COLNONE
+    time = color::ize(color::bold color::bg_white color::black, $2)
     $2 = $1
     $1 = time
 
