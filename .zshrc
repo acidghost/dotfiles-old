@@ -31,6 +31,8 @@ forgit_restore=fgcf
 forgit_clean=fgclean
 forgit_stash_show=fgss
 
+export ZSH_TMUX_FIXTERM=true
+export ZSH_TMUX_UNICODE=true
 
 source ~/antigen/antigen.zsh
 
@@ -44,8 +46,10 @@ antigen bundle emoji
 antigen bundle fancy-ctrl-z
 antigen bundle git
 antigen bundle gitignore
+antigen bundle thefuck
 antigen bundle themes
 antigen bundle tmux
+antigen bundle vagrant
 antigen bundle vi-mode
 antigen bundle virtualenv
 antigen bundle web-search
@@ -66,7 +70,6 @@ antigen apply
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 export EDITOR=nvim
-export ZSH_TMUX_FIXTERM=true
 
 [[ -d ~/.local/bin ]] && export PATH="$PATH:$HOME/.local/bin"
 [[ -d ~/.cargo/bin ]] && export PATH="$PATH:$HOME/.cargo/bin"
