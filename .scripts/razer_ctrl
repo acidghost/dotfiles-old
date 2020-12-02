@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+
+import argparse
+from enum import Enum
+from openrazer.client import DeviceManager
+from openrazer.client import constants as const
+from openrazer.client.devices import RazerDevice
+from openrazer.client.devices.mice import RazerMouse
+from openrazer.client.devices.keyboard import RazerKeyboard
+from openrazer.client.devices.mousemat import RazerMousemat
+
+
+class DeviceType(Enum):
+    MOUSE = "mouse"
+    KB = "kb"
+    MAT = "mat"
+    OTHER = "other"
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def all():
+        return [
+            DeviceType.MOUSE, DeviceType.KB, DeviceType.MAT, DeviceType.OTHER
+        ]
+
+
+class EffectType(Enum):
+    STATIC = "static"
+    REACTIVE = "reactive"
+
+    def __str__(self):
+        return self.value
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Control Razer devices colors")
+
+    parser.add_argument("-e",
+                        dest="effect",
+                        type=EffectType,
+                        choices=list(EffectType),
+                        help="Effect",
+                        default=EffectType.STATIC)
+
+    parser.add_argument("-r", type=int, help="Red color", default=0)
+    parser.add_argument("-g", type=int, help="Green color", default=0)
+    parser.add_argument("-b", type=int, help="Blue color", default=0)
+
+    parser.add_argument("-d",
+                        dest="devices",
+                        type=DeviceType,
+                        choices=list(DeviceType),
+                        nargs="*",
+                        help="Devices",
+                        default=[DeviceType.all()])
+
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    eff_s = str(args.effect)
+    eff_args = [args.r, args.g, args.b]
+    if args.effect == EffectType.REACTIVE:
+        eff_args += [const.REACTIVE_500MS]
+
+    manager = DeviceManager()
+    for dev in manager.devices:
+        if DeviceType.MOUSE in args.devices and isinstance(dev, RazerMouse):
+            if dev.fx.has(f"backlight_{eff_s}"):
+                dev.fx.misc.backlight.__getattribute__(eff_s)(*eff_args)
+            if dev.fx.has(f"logo_{eff_s}"):
+                dev.fx.misc.logo.__getattribute__(eff_s)(*eff_args)
+            if dev.fx.has(f"left_{eff_s}"):
+                dev.fx.misc.left.__getattribute__(eff_s)(*eff_args)
+            if dev.fx.has(f"right_{eff_s}"):
+                dev.fx.misc.right.__getattribute__(eff_s)(*eff_args)
+            if dev.fx.has(f"scroll_{eff_s}"):
+                dev.fx.misc.scroll_wheel.__getattribute__(eff_s)(*eff_args)
+        elif dev.fx.has(eff_s):
+            if DeviceType.KB in args.devices and isinstance(
+                    dev, RazerKeyboard):
+                dev.fx.__getattribute__(eff_s)(*eff_args)
+            elif DeviceType.MAT in args.devices and isinstance(
+                    dev, RazerMousemat):
+                dev.fx.__getattribute__(eff_s)(*eff_args)
+            elif DeviceType.OTHER in args.devices and not isinstance(
+                    dev, RazerKeyboard) and not isinstance(dev, RazerMousemat):
+                dev.fx.__getattribute__(eff_s)(*eff_args)
+
+
+if __name__ == "__main__":
+    main()
