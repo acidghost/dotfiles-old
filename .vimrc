@@ -59,6 +59,7 @@ Plug 'machakann/vim-sandwich'
 Plug 'tpope/vim-obsession'
 Plug 'dhruvasagar/vim-prosession'
 Plug 'cespare/vim-toml'
+Plug 'vim-latex/vim-latex'
 
 call plug#end()
 
@@ -123,6 +124,9 @@ command! -bang -nargs=* RgPreview
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
   \   fzf#vim#with_preview(), <bang>0)
+
+""" vim-latex
+let g:tex_flavor='latex'
 
 """ Key mappings
 let mapleader = ","
