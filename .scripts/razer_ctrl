@@ -4,7 +4,6 @@ import argparse
 from enum import Enum
 from openrazer.client import DeviceManager
 from openrazer.client import constants as const
-from openrazer.client.devices import RazerDevice
 from openrazer.client.devices.mice import RazerMouse
 from openrazer.client.devices.keyboard import RazerKeyboard
 from openrazer.client.devices.mousemat import RazerMousemat
