@@ -70,6 +70,7 @@ antigen apply
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 export EDITOR=nvim
+export LESS="JR"
 
 [[ -d ~/.local/bin ]] && export PATH="$PATH:$HOME/.local/bin"
 [[ -d ~/.cargo/bin ]] && export PATH="$PATH:$HOME/.cargo/bin"
@@ -89,6 +90,8 @@ test -r /home/acidghost/.opam/opam-init/init.zsh && . /home/acidghost/.opam/opam
 # bat
 export BAT_THEME=base16-256
 export BAT_STYLE=numbers,grid
+# accomodate for "less -J"
+alias bat="bat --terminal-width -2"
 
 # FZF
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
