@@ -6,6 +6,13 @@ binary_exists() {
     hash "$1" > /dev/null 2>&1
 }
 
+if [[ ! -d "$HOME/wa" ]]; then
+    echo "Create $HOME/wa directory first..."
+    exit 1
+fi
+
+OSS_DIR="$HOME/wa/oss"
+
 echo 'Installing some apt packages...'
 sudo apt install curl python3-pip python-pygments python3-dev python3-setuptools
 
@@ -62,8 +69,8 @@ if [[ -e ~/.local/bin/haskell-language-server-wrapper ]]; then
     echo 'Haskell Language Server already installed'
 else
     echo 'Installing Haskell Language Server...'
-    mkdir -p "$HOME/oss"
-    cd "$HOME/oss"
+    mkdir -p "$OSS_DIR"
+    cd "$OSS_DIR"
     git clone https://github.com/haskell/haskell-language-server.git --recurse-submodules
     cd haskell-language-server
     stack ./install.hs hls-8.6.5
