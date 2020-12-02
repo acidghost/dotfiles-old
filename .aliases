@@ -42,6 +42,8 @@ done
 unset f
 
 alias rgrep='rgrep --color=auto -n'
+alias tabcsv='column -s, -t'
+alias tabtsv='column -s"\t" -t'
 
 # Simple, handy commands. For bigger ones, use a separate file.
 
