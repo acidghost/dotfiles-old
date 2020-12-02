@@ -31,6 +31,7 @@ case "$prog" in
     ssh                             ) echo -n "" ;;
     scheme|petite                   ) echo -n "λ" ;;
     ghc*|stack                      ) echo -n "" ;;
+    vifm                            ) echo -n "ﱮ" ;;
     *                               ) echo -n "" ;;
 esac
 
