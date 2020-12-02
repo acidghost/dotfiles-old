@@ -3,6 +3,7 @@ alias ta='tmux attach'
 alias tat='tmux attach -t'
 
 alias e='$EDITOR'
+alias objdump='objdump -M intel'
 
 alias mouse-here='xdotool mousemove --window `xdotool getwindowfocus` 20 20'
 
