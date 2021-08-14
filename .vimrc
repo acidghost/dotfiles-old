@@ -47,11 +47,8 @@ call plug#begin('~/.vim/plugged')
 " Make sure you use single quotes
 Plug 'itchyny/lightline.vim'
 Plug 'chriskempson/base16-vim'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/completion-nvim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'scrooloose/nerdTree'
@@ -100,19 +97,78 @@ let g:lightline = {
     \ },
     \ }
 
-" Language client configuration
-set hidden      " Required for operations modifying multiple buffers like rename.
-let g:LanguageClient_serverCommands = {
-    \ 'python': ['~/.local/bin/pyls'],
-    \ 'rust': ['~/.cargo/bin/rls'],
-    \ 'cpp': ['clangd-10'],
-    \ 'c': ['clangd-10'],
-    \ 'haskell': ['haskell-language-server-wrapper', '--lsp'],
-    \ }
+" neovim lsp
+lua << EOF
+local nvim_lsp = require('lspconfig')
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+    local function set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+    local function set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+    --Enable completion triggered by <c-x><c-o>
+    set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+    -- Mappings.
+    local opts = { noremap=true, silent=true }
+
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    set_keymap('n', '<leader>lD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+    set_keymap('n', '<leader>ld', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+    set_keymap('n', '<leader>lh', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+    set_keymap('n', '<leader>li', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+    set_keymap('n', '<leader>lk', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+    set_keymap('n', '<leader>lwa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+    set_keymap('n', '<leader>lwr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+    set_keymap('n', '<leader>lwl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+    set_keymap('n', '<leader>lt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+    set_keymap('n', '<leader>lr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+    set_keymap('n', '<leader>la', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+    set_keymap('n', '<leader>lx', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+    set_keymap('n', '<leader>ldd', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+    set_keymap('n', '<leader>ldp', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+    set_keymap('n', '<leader>ldn', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+    set_keymap('n', '<leader>ldq', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+    set_keymap("n", "<leader>lf", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+
+end
+
+-- Use a loop to conveniently call 'setup' on multiple servers and
+-- map buffer local keybindings when the language server attaches
+local servers = {
+    clangd = {};
+    -- fsautocomplete = {};
+    gopls = {};
+    hls = {};
+    pyright = {};
+    rust_analyzer = {
+        cargo = {
+            loadOutDirsFromCheck = true
+        },
+        procMacro = {
+            enable = true
+        },
+    };
+    tsserver = {};
+}
+for lsp, settings in pairs(servers) do
+    nvim_lsp[lsp].setup {
+        on_attach = on_attach,
+        flags = { debounce_text_changes = nil },
+        settings = settings,
+    }
+end
+EOF
 
 " deoplete
-let g:deoplete#enable_at_startup = 1
-set completeopt-=preview
+" let g:deoplete#enable_at_startup = 1
+" set completeopt-=preview
+
+" completion-nvim
+autocmd BufEnter * lua require'completion'.on_attach()
+set completeopt=menuone,noinsert,noselect
+set shortmess+=c
 
 " Prosession config
 let g:prosession_tmux_title = 1
@@ -171,24 +227,8 @@ nmap <C-s>d :ProsessionDelete<CR>
 
 noremap @ :nohl<CR>
 
-function LC_maps()
-    if has_key(g:LanguageClient_serverCommands, &filetype)
-        nmap <silent><leader>ld <Plug>(lcn-definition)
-        nmap <silent><leader>lr <Plug>(lcn-rename)
-        nmap <silent><leader>lf <Plug>(lcn-format)
-        nmap <silent><leader>lt <Plug>(lcn-type-definition)
-        nmap <silent><leader>lx <Plug>(lcn-references)
-        " nnoremap <leader>la :call LanguageClient_workspace_applyEdit()<CR>
-        nmap <silent><leader>la <Plug>(lcn-code-action)
-        nmap <silent><leader>lc :call LanguageClient#textDocument_completion()<CR>
-        nmap <silent><leader>lh <Plug>(lcn-hover)
-        nmap <silent><leader>ls <Plug>(lcn-symbols)
-        nmap <silent><leader>lm <Plug>(lcn-menu)
-        nmap <silent><leader>le <Plug>(lcn-explain-error)
-    endif
-endfunction
 
-autocmd FileType * call LC_maps()
+imap <silent> <c-p> <Plug>(completion_trigger)
 
 autocmd BufRead,BufNewFile $HOME/.aliases set ft=sh
 autocmd BufRead,BufNewFile $HOME/.path set ft=sh
