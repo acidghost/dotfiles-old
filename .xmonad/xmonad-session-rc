@@ -12,6 +12,9 @@ setxkbmap -layout 'us,it,apl' \
     -variant 'dyalog' \
     -option 'grp:menu_toggle,grp_led:scroll,compose:ralt'
 
+local touchpad_id=`xinput | grep -i touchpad | sed 's/^.*id=\([0-9][0-9]*\).*$/\1/'`
+xinput set-prop "$touchpad_id" "libinput Tapping Enabled" 1
+
 mkdir -p $HOME/.log
 
 nohup dunst > $HOME/.log/dunst.log &

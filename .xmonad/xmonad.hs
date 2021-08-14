@@ -1,3 +1,4 @@
+import           Control.Monad                 ( when )
 import qualified Data.Map                      as M
 import           Data.List                     ( elemIndex )
 import           XMonad
@@ -11,42 +12,42 @@ import           XMonad.Layout.Accordion
 import           XMonad.Layout.LayoutBuilder
 import           XMonad.Layout.MultiColumns
 import           XMonad.Layout.Renamed
-import           XMonad.Layout.ResizableTile
 import           XMonad.Layout.PerWorkspace     ( onWorkspace )
 import           XMonad.Layout.SimplestFloat
 import           XMonad.Layout.ToggleLayouts    ( toggleLayouts )
 import           XMonad.Layout.WindowArranger
 import           XMonad.Layout.WorkspaceDir
-import qualified XMonad.StackSet               as W
+import qualified XMonad.StackSet                as W
+import qualified XMonad.Util.ExtensibleState    as XS
 import           XMonad.Util.Run                ( spawnPipe )
-import           XMonad.Util.EZConfig           ( additionalKeys
-                                                , additionalKeysP
-                                                )
 import           Graphics.X11.ExtraTypes.XF86
 import           System.IO
 import           System.Exit
 
 
--- main = mainXmobar
+main :: IO ()
 main = mainDzen
+-- main = mainXmobar
 
+mainDzen :: IO ()
 mainDzen = do
     d <-
         spawnPipe
             "dzen2 -dock -p -xs 1 -ta l -h 18 -e 'button3=exit:13;sigusr1=togglehide'"
-    spawn $ "conky -c ~/.config/conky/conky_status.lua"
+    spawn "conky -c ~/.config/conky/conky_status.lua"
     xmonad $ withUrgencyHook NoUrgencyHook $ myConfig $ dynamicLogWithPP
-        defaultPP { ppOutput  = hPutStrLn d
-                  , ppTitle   = (" " ++) . dzenColor "green" "" . dzenEscape
-                  , ppCurrent = dzenColor "green" "" . pad
-                  , ppVisible = dzenColor "yellow" "" . pad
-                  , ppHidden  = dzenColor "white" "" . pad
-                  , ppUrgent  = dzenColor "red" "" . pad
-                  , ppWsSep   = ""
-                  , ppSep     = " | "
-                  , ppSort    = getSortByOrder
-                  }
+        def { ppOutput  = hPutStrLn d
+            , ppTitle   = (" " ++) . dzenColor "green" "" . dzenEscape
+            , ppCurrent = dzenColor "green" "" . pad
+            , ppVisible = dzenColor "yellow" "" . pad
+            , ppHidden  = dzenColor "white" "" . pad
+            , ppUrgent  = dzenColor "red" "" . pad
+            , ppWsSep   = ""
+            , ppSep     = " | "
+            , ppSort    = getSortByOrder
+            }
 
+mainXmobar :: IO ()
 mainXmobar = do
     xmproc <- spawnPipe "xmobar-top"
     xmonad $ myConfig $ dynamicLogWithPP xmobarPP
@@ -68,15 +69,18 @@ myConfig lh = ewmh $ def
                            <+> fullscreenEventHook
     , logHook            = lh
     , keys               = myKeys
+    , mouseBindings      = myMouseBindings
     }
 
+myMod :: KeyMask
 myMod = mod4Mask
 
+myWorkspaces :: [String]
 myWorkspaces =
-    ["work", "web", "chat", "read", "full", "float"]
+    ["work", "web", "chat", "read", "full", "meet", "media", "float", "w9"]
 
 myManageHook =
-    (composeAll . concat $ [[ resource =? r --> doFloat | r <- myFloatApps ]])
+    composeAll ([ resource =? r --> doFloat | r <- myFloatApps ])
         <+> manageDocks
         <+> def
     where myFloatApps = ["Zotero", "pavucontrol", "xmessage"]
@@ -90,8 +94,11 @@ myLayoutHook =
         $ onWorkspace "chat"  myChatLayout
         $ onWorkspace "read"  myMediaLayout
         $ onWorkspace "full"  full
+        $ onWorkspace "meet"  myDefaultLayout
+        $ onWorkspace "media" myDefaultLayout
         $ onWorkspace "float" simplestFloat
-        $ myDefaultLayout
+        $ onWorkspace "w9"    myDefaultLayout
+        myDefaultLayout
   where
     myWorkLayout =
         workspaceDir "~"
@@ -128,23 +135,28 @@ myLayoutHook =
                     (Mirror tiled)
                     (layoutAll (relBox 0.45 0 1 1) accord)
 
+dmenu :: [Char] -> X ()
 dmenu cmd = spawn $ cmd ++ dmenuTheme
     where dmenuTheme = " -nb '#000' -nf '#0f0' -sb '#b31e8d' -sf '#0f0'"
 
+volumeUpdate :: Int -> X ()
 volumeUpdate n =
-    spawn $ "pactl set-sink-volume @DEFAULT_SINK@ " ++ sho n ++ "%"
+    spawn $ "pactl set-sink-volume @DEFAULT_SINK@ " ++ sn ++ "%"
   where
-    sho n | n > 0     = "+" ++ show n
-          | otherwise = show n
+    sn | n > 0     = "+" ++ show n
+       | otherwise = show n
 
+volumeToggle :: X ()
 volumeToggle = spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle"
 
+screenGrab :: Bool -> X ()
 screenGrab focused =
     spawn $ "scrot " ++ filename ++ " -d 1 -e 'sxiv $f'" ++ opts
   where
     (prefix, opts) = if focused then ("window", " -u") else ("screen", "")
     filename       = "~/Pictures/" ++ prefix ++ "_%Y-%m-%d-%H-%M-%S.png"
 
+myFloatArrangeStep :: Int
 myFloatArrangeStep = 20
 
 getWorkspacesH :: X [WorkspaceId]
@@ -158,6 +170,9 @@ getWorkspacesA = do
     sort <- getSortByOrder
     return $ map W.tag $ sort $ W.workspaces ws
 
+getCurrentWorkspace :: X WorkspaceId
+getCurrentWorkspace = gets windowset >>= (return . W.currentTag)
+
 data IterWorkspacesDir = NextWorkspace | PrevWorkspace deriving(Eq)
 
 getNextWorkspace :: IterWorkspacesDir -> X WorkspaceId
@@ -168,15 +183,32 @@ getNextWorkspace dir = do
         current = W.currentTag ws
         curIdx = elemIndex current sorted
     return $ case curIdx of
-        (Just c) -> sorted !! (moveIt c (length sorted))
+        (Just c) -> sorted !! moveIt c (length sorted)
         _        -> current
     where
-        moveIt c max
-            | dir == NextWorkspace = (c + 1) `mod` max
-            | dir == PrevWorkspace && c == 0 = max - 1
+        moveIt c mx
+            | dir == NextWorkspace = (c + 1) `mod` mx
+            | dir == PrevWorkspace && c == 0 = mx - 1
             | otherwise = c - 1
 
-myKeys conf@(XConfig { XMonad.modMask = modMask }) =
+newtype WorkspacesHistory = WorkspacesHistory [WorkspaceId]
+
+instance ExtensionClass WorkspacesHistory where
+    initialValue = WorkspacesHistory []
+
+rememberWorkspace :: WorkspaceId -> X ()
+rememberWorkspace c = when (c `notElem` myWorkspaces) $ do
+    (WorkspacesHistory hs) <- XS.get
+    XS.put $ WorkspacesHistory (c:hs)
+
+withRememberWorkspace :: X () -> X ()
+withRememberWorkspace act = act >> getCurrentWorkspace >>= rememberWorkspace
+
+withRememberWorkspace' :: X () -> X ()
+withRememberWorkspace' act = getCurrentWorkspace >>= (act >>) . rememberWorkspace
+
+myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
+myKeys conf@XConfig { XMonad.modMask = modMask } =
     M.fromList
         $
     -- launching and killing programs
@@ -229,20 +261,19 @@ myKeys conf@(XConfig { XMonad.modMask = modMask }) =
              , addWorkspacePrompt def
              )
            , ( (modMask, xK_s)
-             , selectWorkspace def
+             , withRememberWorkspace $ selectWorkspace def
              )
            , ( (modMask .|. shiftMask, xK_Delete)
-             , fmap (filter (`notElem` myWorkspaces)) getWorkspacesH
-               >>= (mapM_ removeEmptyWorkspaceByTag)
+             , getWorkspacesH >>= mapM_ removeEmptyWorkspaceByTag . filter (`notElem` myWorkspaces)
              ) -- clean up all hidden, empty, temporary workspaces
            , ( (modMask .|. shiftMask, xK_v)
              , withWorkspace def $ windows . W.shift
              )
            , ( (modMask, xK_Page_Up)
-             , (getNextWorkspace NextWorkspace) >>= (windows . W.greedyView)
+             , withRememberWorkspace $ getNextWorkspace NextWorkspace >>= (windows . W.greedyView)
              )
            , ( (modMask, xK_Page_Down)
-             , (getNextWorkspace PrevWorkspace) >>= (windows . W.greedyView)
+             , withRememberWorkspace $ getNextWorkspace PrevWorkspace >>= (windows . W.greedyView)
              )
 
     -- resizing the master/slave ratio
@@ -304,7 +335,7 @@ myKeys conf@(XConfig { XMonad.modMask = modMask }) =
              , screenGrab True
              )
 
-    -- resize and move loating windows with keyboard
+    -- resize and move floating windows with keyboard
            , ( (myMod .|. controlMask, xK_Left)
              , sendMessage (MoveLeft myFloatArrangeStep)
              )
@@ -344,7 +375,7 @@ myKeys conf@(XConfig { XMonad.modMask = modMask }) =
 
     -- quit, or restart
            , ( (modMask .|. shiftMask, xK_q)
-             , io (exitWith ExitSuccess)
+             , io exitSuccess
              ) -- %! Quit xmonad
            , ( (myMod, xK_q)
              , spawn "killall conky dzen2; xmonad --recompile; xmonad --restart"
@@ -357,15 +388,13 @@ myKeys conf@(XConfig { XMonad.modMask = modMask }) =
            ]
         ++
     -- mod-[1..9] %! Switch to workspace N
-    -- mod-shift-[1..9] %! Move client to workspace N
-           [ ((m .|. modMask, k), windows $ f i)
-           | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
-           , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]
+           [ ( (modMask, k), withRememberWorkspace' $ windows $ W.greedyView i)
+             | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
            ]
         ++
-           [ ((m .|. modMask, k), getWorkspacesA >>= (return . (!! i)) >>= (windows . f))
-           | (i, k) <- drop (length $ workspaces conf) $ zip [0 ..] [xK_1 .. xK_9]
-           , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]
+    -- mod-shift-[1..9] %! Move client to workspace N
+           [ ( (shiftMask .|. modMask, k), windows $ W.shift i)
+             | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
            ]
         ++
     -- mod-{w,e,r} %! Switch to physical/Xinerama screens 1, 2, or 3
@@ -376,8 +405,39 @@ myKeys conf@(XConfig { XMonad.modMask = modMask }) =
            | (key, sc) <- zip [xK_w, xK_e, xK_r] [0 ..]
            , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
            ]
+        ++
+    -- mod-0 %! Pop and switch workspace history
+           [ ( (modMask, xK_0)
+             , do
+                 (WorkspacesHistory hs) <- XS.get
+                 windows $ W.greedyView (head hs)
+                 XS.put (WorkspacesHistory $ tail hs)
+             )
+           , ( (shiftMask .|. modMask, xK_0)
+             , displayWorkspaceHistory
+             )
+           ]
   where
+    xmessage = "xmessage -bg black -fg green3 -default okay"
     helpCommand =
         spawn
             $ "fortune computers perl linux fortunes humorists | "
-            ++ "cowsay -f ghostbusters | xmessage -bg black -fg green3 -default okay -file -"
+            ++ "cowsay -f ghostbusters | " ++ xmessage ++ " -file -"
+    displayWorkspaceHistory = do
+         (WorkspacesHistory hs) <- XS.get
+         let lst = unlines $ map show hs
+             msg = if null lst then "n/a" else lst
+          in spawn $ xmessage ++ " 'Dynamic workspaces history:\n" ++ msg ++ "'"
+
+myMouseBindings :: XConfig l -> M.Map (KeyMask, Button) (Window -> X ())
+myMouseBindings XConfig {XMonad.modMask = modMask} = M.fromList
+    -- from 1 to 5: left, wheel, right, wheel up, wheel down
+    -- mod-button1 %! Set the window to floating mode and move by dragging
+    [ ((modMask, button1), \w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster)
+    -- mod-button3 %! Set the window to floating mode and resize by dragging
+    , ((modMask, button3), \w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster)
+    -- mod-button4 %! Raise the window to the top of the stack
+    , ((modMask, button4), windows . (W.shiftMaster .) . W.focusWindow)
+    -- mod-button5 %! Close selected window
+    , ((modMask, button5), killWindow)
+    ]
