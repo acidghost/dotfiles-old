@@ -24,6 +24,7 @@ set history=1000   " More history
 set list           " Highlight non whitespace characters
 set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<
 set noshowmode     " Hide mode in bottom line given lightline
+set colorcolumn=100 " Vertical column
 
 " allow .vimrc files to reside in project folders
 set exrc
@@ -52,11 +53,17 @@ Plug 'nvim-lua/completion-nvim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'scrooloose/nerdTree'
+Plug 'liuchengxu/vista.vim'
 Plug 'machakann/vim-sandwich'
 Plug 'tpope/vim-obsession'
+Plug 'tpope/vim-commentary'
 Plug 'dhruvasagar/vim-prosession'
-Plug 'cespare/vim-toml'
+" Language / syntax support
+Plug 'sheerun/vim-polyglot'
 Plug 'vim-latex/vim-latex'
+Plug 'JuliaEditorSupport/julia-vim'
+Plug 'souffle-lang/souffle.vim'
+Plug 'aliou/bats.vim'
 
 call plug#end()
 
@@ -89,11 +96,14 @@ let g:lightline = {
     \ 'colorscheme': 'deus',
     \ 'active': {
     \   'left': [ [ 'mode', 'paste' ],
-    \             [ 'readonly', 'filename', 'modified' ],
+    \             [ 'readonly', 'filename', 'modified', 'method' ],
     \             [ 'obsession' ] ]
     \ },
     \ 'component': {
     \   'obsession': '%{ObsessionStatus("", "")}',
+    \ },
+    \ 'component_function': {
+    \   'method': 'NearestMethodOrFunction',
     \ },
     \ }
 
@@ -175,6 +185,11 @@ let g:prosession_tmux_title = 1
 let g:prosession_tmux_title_format = ":@@@"
 let g:prosession_on_startup = 1
 
+" vista.vim
+function! NearestMethodOrFunction() abort
+  return get(b:, 'vista_nearest_method_or_function', '')
+endfunction
+
 " FZF
 command! -bang -nargs=* RgPreview
   \ call fzf#vim#grep(
@@ -218,15 +233,18 @@ nmap <Leader>g :GFiles<CR>
 nmap <Leader>G :GFiles!<CR>
 nmap <Leader>c :GFiles?<CR>
 nmap <Leader>b :Buffers<CR>
-cmap <C-r> :History:<CR>
+cmap <C-h> :History:<CR>
 nmap <C-h> :Helptags<CR>
 
 nmap <C-s> :Obsession<CR>
 nmap <C-s>s :Prosession<Space>
 nmap <C-s>d :ProsessionDelete<CR>
 
-noremap @ :nohl<CR>
+nmap <Leader>v :Vista!!<CR>
+nmap <Leader>vf :Vista finder<CR>
+nmap <Leader>vs :Vista focus<CR>
 
+noremap @ :nohl<CR>
 
 imap <silent> <c-p> <Plug>(completion_trigger)
 
@@ -242,6 +260,7 @@ autocmd FileType go setlocal shiftwidth=4 tabstop=4 noexpandtab
 autocmd FileType cpp setlocal shiftwidth=2 tabstop=2
 autocmd FileType cmake setlocal shiftwidth=2 tabstop=2
 autocmd FileType org setlocal shiftwidth=2 tabstop=2
+autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
 
 " Useful utilities
 
