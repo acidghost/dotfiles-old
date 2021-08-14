@@ -10,8 +10,7 @@ fi
 case "$prog" in
     rust|cargo                      ) echo -n "" ;;
     zsh|bash|sh                     ) echo -n "" ;;
-    vim|nvim                        ) echo -n "" ;;
-    stack                           ) echo -n "" ;;
+    [n]vim|vimdiff                  ) echo -n "" ;;
     swipl                           ) echo -n "" ;;
     man                             ) echo -n "" ;;
     gdb|rr                          ) echo -n "" ;;
@@ -32,6 +31,8 @@ case "$prog" in
     scheme|petite                   ) echo -n "λ" ;;
     ghc*|stack                      ) echo -n "" ;;
     vifm                            ) echo -n "ﱮ" ;;
+    *emacs*                         ) echo -n "" ;;
+    julia                           ) echo -n "" ;;
     *                               ) echo -n "" ;;
 esac
 
