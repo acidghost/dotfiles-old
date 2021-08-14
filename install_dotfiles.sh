@@ -33,11 +33,6 @@ else
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 fi
 
-# Install Python language server + YAPF & PyFlakes
-pip3 install python-language-server \
-    'python-language-server[yapf]' \
-    'python-language-server[pyflakes]'
-
 if [[ -d /opt/neofetch ]]; then
     echo 'neofetch is already installed'
 else
@@ -73,8 +68,9 @@ else
     cd "$OSS_DIR"
     git clone https://github.com/haskell/haskell-language-server.git --recurse-submodules
     cd haskell-language-server
+    git checkout 1.3.0
     stack ./install.hs hls-8.6.5
-    stack ./install.hs data
+    stack ./install.hs hls-8.10.4
     cd "$HOME"
 fi
 
@@ -86,17 +82,19 @@ else
     rustup update
 fi
 
-if binary_exists rls; then
-    echo 'Rust Language Server (RLS) is already installed'
+if binary_exists rust-analyzer; then
+    echo 'rust-analyzer is already installed'
 else
-    echo 'Installing Rust Language Server (RLS)...'
-    rustup update
-    rustup component add rls rust-analysis rust-src
+    echo 'Intalling rust-analyzer...'
+    curl -L -o- \
+        'https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-linux.gz' \
+        | gunzip > "$HOME/.local/bin/rust-analyzer"
+    chmod +x "$HOME/.local/bin/rust-analyzer"
 fi
 
 echo 'Installing xmonad deps + urxvt + feh + xscreensaver...'
 sudo apt install libx11-dev libxinerama-dev libxext-dev \
-    libxrandr-dev libxss-dev libxft-dev↑ \
+    libxrandr-dev libxss-dev libxft-dev \
     suckless-tools rxvt-unicode feh xscreensaver
 
 if binary_exists xmonad; then
