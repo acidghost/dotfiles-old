@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Aliases
 alias ta='tmux attach'
 alias tat='tmux attach -t'
@@ -7,15 +8,13 @@ alias objdump='objdump -M intel'
 
 alias mouse-here='xdotool mousemove --window `xdotool getwindowfocus` 20 20'
 
-for i in `seq 10`; do
-    alias "tree$i"="tree -L $i"
-    alias "dh$i"="du -h -d $i"
+for i in $(seq 10); do
+    # shellcheck disable=SC2139
+    alias "tree$i=tree -L $i"
+    # shellcheck disable=SC2139
+    alias "dh$i=du -h -d $i"
 done
-
-xmobar_bin='xmobar-top'
-alias xmobar_move_next="kill -USR1 \$(pidof $xmobar_bin)"
-alias xmobar_move_current="kill -USR2 \$(pidof $xmobar_bin)"
-unset xmobar_bin
+unset i
 
 alias dzen-toggle="kill -USR1 \$(pidof dzen2)"
 # alias dzen-ungrab="kill -USR2 \$(pidof dzen2)"
@@ -28,12 +27,14 @@ alias dzen-toggle="kill -USR1 \$(pidof dzen2)"
             if [[ -z "$1" ]]; then
                 cat "$_RZR_DBUS_DIR/matrix_brightness"
             else
-                printf '%d' $1 > "$_RZR_DBUS_DIR/matrix_brightness"
+                printf '%d' "$1" > "$_RZR_DBUS_DIR/matrix_brightness"
             fi
         }
 
         alias rzr_off="rzr_brightness 0"
+        # shellcheck disable=SC2139
         alias rzr_default_fx="printf \"\\x00\\xff\\x00\" > $f/matrix_effect_static"
+        # shellcheck disable=SC2139
         alias rzr_alert_fx="rzr_brightness 255 && printf \"\\xff\\x00\\x00\" > $f/matrix_effect_breath"
 
         break
@@ -48,7 +49,7 @@ alias tabtsv='column -s"\t" -t'
 # Simple, handy commands. For bigger ones, use a separate file.
 
 show_off() {
-    clear && python3 -c "print('\n' * 6)" && neofetch $* && python3 -c "print('\n' * 6)"
+    clear && python3 -c "print('\n' * 6)" && neofetch "$@" && python3 -c "print('\n' * 6)"
 }
 
 vusec_show_off() {
@@ -59,61 +60,82 @@ gvb_start() {
     local pid_file="$HOME/.gvb-service.pid"
     if [[ -f "$pid_file" ]]; then
         echo 'GVB service is already running...'
-        return -1
+        return 1
     fi
-    nohup gvb-service $pid_file > "$HOME/.log/gvb-service.log" 2>&1 &
+    nohup gvb-service "$pid_file" > "$HOME/.log/gvb-service.log" 2>&1 &
     echo $! > "$pid_file"
 }
 
 gvb_stop() {
     local pid_file="$HOME/.gvb-service.pid"
     if [[ -f "$pid_file" ]]; then
-        kill -9 `cat "$pid_file"`
+        kill -9 "$(cat "$pid_file")"
         rm "$pid_file"
     fi
 }
 
 eecho() {
-    echo $@ 1>&2
+    echo "$@" 1>&2
 }
 
 nmcli_connect() {
-    local uuid=`nmcli -g connection.uuid c show "$1" 2>/dev/null`
+    local uuid
+    uuid=$(nmcli -g connection.uuid c show "$1" 2>/dev/null)
     [ -z "$uuid" ] && eecho "Cannot find UUID for '$1'" && return 1
-    nmcli connection up $uuid
+    nmcli connection up "$uuid"
 }
 
 md_read_as_html() {
-    pandoc -t html $1 | lynx -stdin
+    pandoc -t html "$1" | lynx -stdin
 }
 
 md_read_as_pdf() {
-    [ -e "$1" ] || { eecho "Not a file: $1" && return 1 }
-    local tmpf=`tempfile`
+    if [ ! -e "$1" ]; then
+        eecho "Not a file: $1"
+        return 1
+    fi
+    local tmpf
+    tmpf=$(mktemp)
     local tmpf_pdf="$tmpf.pdf"
-    pandoc -o $tmpf_pdf $1
-    cat $tmpf_pdf | zathura - &
-    rm $tmpf $tmpf_pdf
+    pandoc -o "$tmpf_pdf" "$1"
+    zathura --fork - < "$tmpf_pdf"
+    rm "$tmpf" "$tmpf_pdf"
 }
 
 pdfread() {
-    nohup zathura "$1" > /dev/null &
+    zathura --fork "$@"
 }
 
 picshow() {
-    nohup sxiv $@ > /dev/null &
+    nohup sxiv "$@" > /dev/null &
 }
 
 find_by_name() {
     local n="$1"
-    [ $# -gt 1 ] && local f="$2" || local f='.'
+    if [ $# -gt 1 ]; then
+        local f="$2"
+    else
+        local f='.'
+    fi
     find "$f" -name "*$n*" -print
 }
 
-vusec_desk_setup() {
-    $HOME/.screenlayout/vusec-desk.sh
-    $HOME/.fehbg
-    lux -S 100% > /dev/null
+desk_setup() {
+    case "$1" in
+        vusec)
+            "$HOME/.screenlayout/vusec-desk.sh"
+            lux -S 100% > /dev/null
+            ;;
+        home)
+            "$HOME/.screenlayout/home.sh"
+            lux -S 70% > /dev/null
+            ;;
+        *)
+            eecho "Unrecognized desk"
+            return 1
+    esac
+    "$HOME/.fehbg"
     vusec_show_off
+    echo "$1 desk setup"
 }
 
