@@ -37,8 +37,8 @@ mainDzen = do
     spawn "conky -c ~/.config/conky/conky_status.lua"
     xmonad $ withUrgencyHook NoUrgencyHook $ myConfig $ dynamicLogWithPP
         def { ppOutput  = hPutStrLn d
-            , ppTitle   = (" " ++) . dzenColor "green" "" . dzenEscape
-            , ppCurrent = dzenColor "green" "" . pad
+            , ppTitle   = (" " ++) . dzenColor "#9933ff" "" . dzenEscape
+            , ppCurrent = dzenColor "#9933ff" "" . pad
             , ppVisible = dzenColor "yellow" "" . pad
             , ppHidden  = dzenColor "white" "" . pad
             , ppUrgent  = dzenColor "red" "" . pad
@@ -60,7 +60,7 @@ myConfig lh = ewmh $ def
     , terminal           = "alacritty"
     , borderWidth        = 1
     , normalBorderColor  = "#dddddd"
-    , focusedBorderColor = "#00ff00"
+    , focusedBorderColor = "#9933ff"
     , workspaces         = myWorkspaces
     , manageHook         = myManageHook
     , layoutHook         = myLayoutHook

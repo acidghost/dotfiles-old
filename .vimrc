@@ -93,7 +93,7 @@ set tags+=.tags
 
 " Lightline configuration
 let g:lightline = {
-    \ 'colorscheme': 'deus',
+    \ 'colorscheme': 'Tomorrow_Night_Blue',
     \ 'active': {
     \   'left': [ [ 'mode', 'paste' ],
     \             [ 'readonly', 'filename', 'modified', 'method' ],

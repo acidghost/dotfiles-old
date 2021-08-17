@@ -38,7 +38,7 @@ conky.config = {
     use_xft = true
 }
 
-local cpus = '${color pink}' .. icon('') .. ' ${cpu} ${cpugraph cpu0 10,60 -l} ${color green3}'
+local cpus = '${color pink}' .. icon('') .. ' ${cpu} ${cpugraph cpu0 10,60 -l} ${color pink}'
 for i = 1, nproc do
     cpus = cpus .. '${cpu cpu' .. i .. '} '
 end
@@ -52,6 +52,6 @@ ${color white}]] .. icon('ﯦ') .. [[ ${exec lux -G | sed 's/%//'}${offset 16}\
 ${color aa00aa}]] .. icon('') .. [[ ${memperc} ${memgraph 10,60 -t}${offset 16}\
 ${color 009393}]] .. icon('ﯲ') .. [[ ${downspeed enp7s0} ${downspeedgraph enp7s0 10,60 yellow ffffff}${offset 16}\
 ]] .. icon('ﯴ') .. [[ ${upspeed enp7s0} ${upspeedgraph enp7s0 10,60 yellow white}\
-${alignr}${color ffff00}${time %T}   ${color 00ffff}${time %a %d-%b-%y}\
+${alignr}${color pink}${time %T}   ${color 00ffff}${time %a %d-%b-%y}\
 ]]
 

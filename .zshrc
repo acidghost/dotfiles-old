@@ -34,6 +34,8 @@ forgit_stash_show=fgss
 export ZSH_TMUX_FIXTERM=true
 export ZSH_TMUX_UNICODE=true
 
+export BASE16_SHELL_HOOKS="$HOME/.scripts/base16"
+
 source ~/antigen/antigen.zsh
 
 antigen use oh-my-zsh
@@ -56,10 +58,9 @@ antigen bundle web-search
 antigen bundle z
 
 antigen bundle chriskempson/base16-shell
-
 antigen theme romkatv/powerlevel10k
-
 antigen bundle wfxr/forgit
+antigen bundle fnune/base16-fzf
 
 antigen apply
 
@@ -94,9 +95,11 @@ export BAT_STYLE=numbers,grid
 alias bat="bat --terminal-width -2"
 
 # FZF
-[ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && \
+  source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
 export FZF_TMUX=1
 export FZF_DEFAULT_COMMAND="fd --type f"
+[ -f ~/.fzf_theme ] && source ~/.fzf_theme
 
 _fzf_compgen_path() {
   fd --hidden --follow --exclude ".git" . "$1"

@@ -226,6 +226,7 @@
   ##################################[ dir: current directory ]##################################
   # Current directory background color.
   # typeset -g POWERLEVEL9K_DIR_BACKGROUND=4
+  typeset -g POWERLEVEL9K_DIR_BACKGROUND=135
   # Default current directory foreground color.
   typeset -g POWERLEVEL9K_DIR_FOREGROUND=254
   # If directory is too long, shorten some of its segments to the shortest possible unique
@@ -327,9 +328,16 @@
   #####################################[ vcs: git status ]######################################
   # Versio control system colors.
   # typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND=2
+  typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND=177
+  typeset -g POWERLEVEL9K_VCS_CLEAN_FOREGROUND=255
   # typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND=3
+  typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND=141
+  typeset -g POWERLEVEL9K_VCS_MODIFIED_FOREGROUND=255
   # typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND=2
+  typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND=177
+  typeset -g POWERLEVEL9K_VCS_UNTRACKED_FOREGROUND=255
   # typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND=3
+  typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND=89
   # typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND=8
 
   # Branch icon. Set this parameter to '\uF126 ' for the popular Powerline branch icon.
@@ -361,10 +369,10 @@
 
     # Styling for different parts of Git status.
     local       meta='%7F' # white foreground
-    local      clean='%0F' # black foreground
-    local   modified='%0F' # black foreground
-    local  untracked='%0F' # black foreground
-    local conflicted='%1F' # red foreground
+    local      clean='%7F' # black foreground
+    local   modified='%7F' # black foreground
+    local  untracked='%7F' # black foreground
+    local conflicted='%7F' # red foreground
 
     local res
     local where  # branch name, tag or commit
@@ -473,8 +481,10 @@
 
   ###################[ command_execution_time: duration of the last command ]###################
   # Execution time color.
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND=0
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND=3
+  # typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND=0
+  # typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND=3
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND=255
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND=177
   # Show duration of the last command if takes longer than this many seconds.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=3
   # Show this many fractional digits. Zero means round to seconds.
@@ -490,8 +500,10 @@
   # Background jobs color.
   # typeset -g POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND=6
   # typeset -g POWERLEVEL9K_BACKGROUND_JOBS_BACKGROUND=0
+  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND=135
+  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_BACKGROUND=0
   # Don't show the number of background jobs.
-  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_VERBOSE=false
+  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_VERBOSE=true
   # Icon to show when there are background jobs.
   typeset -g POWERLEVEL9K_BACKGROUND_JOBS_VISUAL_IDENTIFIER_EXPANSION='${P9K_VISUAL_IDENTIFIER// }'
 
@@ -847,6 +859,8 @@
   # Current time color.
   # typeset -g POWERLEVEL9K_TIME_FOREGROUND=0
   # typeset -g POWERLEVEL9K_TIME_BACKGROUND=7
+  typeset -g POWERLEVEL9K_TIME_FOREGROUND=255
+  typeset -g POWERLEVEL9K_TIME_BACKGROUND=135
   # Format for the current time: 09:51:02. See `man 3 strftime`.
   typeset -g POWERLEVEL9K_TIME_FORMAT='%D{%H:%M:%S}'
   # If set to true, time will update when you hit enter. This way prompts for the past
