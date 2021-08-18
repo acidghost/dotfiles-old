@@ -36,6 +36,7 @@ export ZSH_TMUX_UNICODE=true
 
 export BASE16_SHELL_HOOKS="$HOME/.scripts/base16"
 
+export ANTIGEN_LOG="$HOME/.log/antigen.log"
 source ~/antigen/antigen.zsh
 
 antigen use oh-my-zsh
@@ -61,6 +62,7 @@ antigen bundle chriskempson/base16-shell
 antigen theme romkatv/powerlevel10k
 antigen bundle wfxr/forgit
 antigen bundle fnune/base16-fzf
+antigen bundle jordiorlando/base16-rofi
 
 antigen apply
 
