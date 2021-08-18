@@ -63,6 +63,7 @@ antigen theme romkatv/powerlevel10k
 antigen bundle wfxr/forgit
 antigen bundle fnune/base16-fzf
 antigen bundle jordiorlando/base16-rofi
+antigen bundle HaoZeke/base16-zathura@main
 
 antigen apply
 
