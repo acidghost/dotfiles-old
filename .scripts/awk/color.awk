@@ -34,3 +34,18 @@ BEGIN {
 function ize(color, string) {
     return color string none
 }
+
+function _rgb_helper(mode, color, string) {
+    r = (color / (2^16)) % 256
+    g = (color / (2^8))  % 256
+    b =  color           % 256
+    return sprintf("\033[%d;2;%d;%d;%dm%s" none, mode, r, g, b, string)
+}
+
+function rgb_fg(color, string) {
+    return _rgb_helper(38, color, string)
+}
+
+function rgb_bg(color, string) {
+    return _rgb_helper(48, color, string)
+}
