@@ -36,6 +36,11 @@ export ZSH_TMUX_UNICODE=true
 
 export BASE16_SHELL_HOOKS="$HOME/.scripts/base16"
 
+# forgit
+export FORGIT_PAGER="delta --features=forgit"
+export FORGIT_SHOW_PAGER=$FORGIT_PAGER
+export FORGIT_DIFF_PAGER=$FORGIT_PAGER
+
 export ANTIGEN_LOG="$HOME/.log/antigen.log"
 source ~/antigen/antigen.zsh
 
