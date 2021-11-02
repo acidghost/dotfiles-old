@@ -68,9 +68,9 @@ else
     cd "$OSS_DIR"
     git clone https://github.com/haskell/haskell-language-server.git --recurse-submodules
     cd haskell-language-server
-    git checkout 1.3.0
+    git checkout 1.4.0
     stack ./install.hs hls-8.6.5
-    stack ./install.hs hls-8.10.4
+    stack ./install.hs hls-8.10.7
     cd "$HOME"
 fi
 
