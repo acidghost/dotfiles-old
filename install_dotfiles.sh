@@ -143,15 +143,16 @@ if binary_exists dunst; then
 else
     echo 'Installing dunst dependencies...'
     sudo apt install libdbus-1-dev libx11-dev libxinerama-dev libxrandr-dev \
-        libxss-dev libglib2.0-dev libpango1.0-dev libgtk-3-dev libxdg-basedir-dev \
-        libnotify-dev
+        libxss-dev libglib2.0-dev libpango1.0-dev libxdg-basedir-dev \
+        libnotify-dev libwayland-client0 wayland-protocols
     echo 'Installing dunst...'
-    sudo git clone https://github.com/dunst-project/dunst.git /opt/dunst
-    cd /opt/dunst
-    sudo make
-    sudo make dunstify
+    mkdir -p "$OSS_DIR"
+    cd "$OSS_DIR"
+    git clone https://github.com/dunst-project/dunst.git
+    cd dunst
+    git checkout v1.7.1
+    make -j
     sudo make install
-    sudo install -Dm755 dunstify /usr/local/bin/dunstify
     cd "$HOME"
 fi
 
