@@ -91,6 +91,7 @@ export AWKPATH="$HOME/.scripts/awk:$AWKPATH"
 
 [[ -e ~/.aliases ]] && source ~/.aliases
 
+# virtualenvwrapper
 export VIRTUALENVWRAPPER_PYTHON=`which python3`
 export VIRTUALENVWRAPPER_VIRTUALENV=`which virtualenv`
 source ~/.local/bin/virtualenvwrapper_lazy.sh
@@ -144,8 +145,10 @@ _z_jump() {
 zle     -N   _z_jump
 bindkey '^j' _z_jump
 
+# thefuck
 eval $(thefuck --alias)
 
+# fix for okular icons
 export QT_QPA_PLATFORMTHEME=qt5ct
 
 # key binding to toggle all the additional prompt info
