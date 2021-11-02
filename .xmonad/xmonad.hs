@@ -77,8 +77,9 @@ myMod = mod4Mask
 
 myWorkspaces :: [String]
 myWorkspaces =
-    ["work", "web", "chat", "read", "full", "meet", "media", "float", "w9"]
+    ["work", "web", "chat", "read", "full", "meet", "media", "w8", "w9"]
 
+myManageHook :: ManageHook
 myManageHook =
     composeAll ([ resource =? r --> doFloat | r <- myFloatApps ])
         <+> manageDocks
@@ -96,8 +97,8 @@ myLayoutHook =
         $ onWorkspace "full"  full
         $ onWorkspace "meet"  myDefaultLayout
         $ onWorkspace "media" myDefaultLayout
-        $ onWorkspace "float" simplestFloat
-        $ onWorkspace "w9"    myDefaultLayout
+        $ onWorkspace "w8"    myWorkLayout
+        $ onWorkspace "w9"    myWorkLayout
         myDefaultLayout
   where
     myWorkLayout =
@@ -111,8 +112,6 @@ myLayoutHook =
             $   tiled'
             ||| columns 1
             ||| full
-            ||| accord
-            ||| simplestFloat
     myChatLayout  = tiled ||| columns 1 ||| full
     myMediaLayout = tiled' ||| full ||| simplestFloat
     myDefaultLayout =
