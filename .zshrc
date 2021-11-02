@@ -147,3 +147,10 @@ bindkey '^j' _z_jump
 eval $(thefuck --alias)
 
 export QT_QPA_PLATFORMTHEME=qt5ct
+
+# key binding to toggle all the additional prompt info
+function toggle-prompt {
+    p10k display '1/(right|left)'=hide,show;
+}
+zle -N toggle-prompt
+bindkey '^P' toggle-prompt
