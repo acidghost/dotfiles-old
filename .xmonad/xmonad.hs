@@ -197,8 +197,8 @@ instance ExtensionClass WorkspacesHistory where
 
 rememberWorkspace :: WorkspaceId -> X ()
 rememberWorkspace c = when (c `notElem` myWorkspaces) $ do
-    (WorkspacesHistory hs) <- XS.get
-    XS.put $ WorkspacesHistory (c:hs)
+    (WorkspacesHistory (h:hs)) <- XS.get
+    when (c /= h) $ XS.put $ WorkspacesHistory (c:hs)
 
 withRememberWorkspace :: X () -> X ()
 withRememberWorkspace act = act >> getCurrentWorkspace >>= rememberWorkspace
