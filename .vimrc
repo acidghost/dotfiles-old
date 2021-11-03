@@ -48,8 +48,10 @@ call plug#begin('~/.vim/plugged')
 " Make sure you use single quotes
 Plug 'itchyny/lightline.vim'
 Plug 'chriskempson/base16-vim'
+if has('nvim-0.5')
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
+end
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'scrooloose/nerdTree'
@@ -107,6 +109,7 @@ let g:lightline = {
     \ },
     \ }
 
+if has('nvim-0.5')
 " neovim lsp
 lua << EOF
 local nvim_lsp = require('lspconfig')
@@ -170,15 +173,18 @@ for lsp, settings in pairs(servers) do
     }
 end
 EOF
+end
 
 " deoplete
 " let g:deoplete#enable_at_startup = 1
 " set completeopt-=preview
 
+if has('nvim-0.5')
 " completion-nvim
 autocmd BufEnter * lua require'completion'.on_attach()
 set completeopt=menuone,noinsert,noselect
 set shortmess+=c
+end
 
 " Prosession config
 let g:prosession_tmux_title = 1
