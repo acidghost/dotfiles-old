@@ -5,13 +5,15 @@ import shutil
 import subprocess
 import sys
 from collections import namedtuple
-from typing import NoReturn, Iterator
+from typing import Callable, Iterator, NoReturn, Tuple
 
 RE = re.compile(r"([a-f\d]+) \(([\w ]+) (\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \+\d{4})\s([\d\s]+)\)\s(.*)")
 LineDat = namedtuple("LineDat", "commit,name,date,line")
-CLI = namedtuple("CLI", "lang,no_commit")
+CLI = namedtuple("CLI", "lang,no_commit,no_shuffle,rgb")
 
-class Colors:
+Colorizer = Callable[[str], str]
+
+class Colors(Iterator[Colorizer]):
     RED = "\033[0;31m"
     GREEN = "\033[0;32m"
     BROWN = "\033[0;33m"
@@ -25,14 +27,28 @@ class Colors:
     LIGHT_CYAN = "\033[1;36m"
     END = "\033[0m"
 
+    def __init__(self, no_shuffle: bool=False):
+        self.__i = 0
+        self.__cs = [getattr(self, _) for _ in dir(self)
+                     if _[0] != "_" and _ not in ("END", "rgb")]
+        if not no_shuffle:
+            random.shuffle(self.__cs)
+
+    def __iter__(self) -> Iterator[Colorizer]:
+        return self
+
+    def __next__(self) -> Colorizer:
+        color = self.__cs[self.__i]
+        self.__i = (self.__i + 1) % len(self.__cs)
+        return lambda c: f"{color}{c}{self.END}"
+
     @staticmethod
-    def iter() -> Iterator[str]:
-        cs = [getattr(Colors, _) for _ in dir(Colors) if _[0] != "_" and _ not in ("END", "iter")]
-        random.shuffle(cs)
-        i = 0
-        while True:
-            yield cs[i]
-            i = (i + 1) % len(cs)
+    def rgb(r: int, g: int, b: int, fg: bool=True) -> Colorizer:
+        return lambda c: f"\033[{38 if fg else 48};2;{r};{g};{b}m{c}{Colors.END}"
+
+def commit2rgb(hs: str) -> Tuple[int, int, int]:
+    assert len(hs) >= 6, f"Commit has only {len(hs)}, expected 6"
+    return int(hs[0:2], base=16), int(hs[2:4], base=16), int(hs[4:6], base=16)
 
 def main():
     params = cli()
@@ -42,14 +58,15 @@ def main():
 
     lines_data = []
     all_code = ""
-    colors = Colors.iter()
+    colors = Colors(params.no_shuffle) if not (params.no_commit or params.rgb) else None
     cs = {}
     for line in sys.stdin.readlines():
         if not (m := RE.search(line)):
             die(f"Cannot match line '{line}'")
         dat = LineDat(*[m[_] for _ in range(1, 5)])
         if not params.no_commit and dat.commit not in cs:
-            cs[dat.commit] = next(colors)
+            cs[dat.commit] = (next(colors) if colors else Colors.rgb(*commit2rgb(dat.commit))) \
+                             (dat.commit)
         all_code += m[5] + '\n'
         lines_data.append(dat)
 
@@ -59,7 +76,7 @@ def main():
     bat_p = subprocess.run([bat_path, "--color=always", "--style=plain"] + bat_opt,
                            input=all_code, encoding="utf-8", capture_output=True, check=True)
     for dat, code in zip(lines_data, bat_p.stdout.splitlines()):
-        print(dat.commit if params.no_commit else f"{cs[dat.commit]}{dat.commit}{Colors.END}",
+        print(dat.commit if params.no_commit else cs[dat.commit],
               f"({dat.name} {dat.date} {dat.line})", code)
 
 def die(err: str) -> NoReturn:
@@ -71,6 +88,8 @@ def cli() -> CLI:
     parser = ArgumentParser(description="Syntax highlighting of git-blame via bat")
     parser.add_argument("-l", "--lang", help="suggest language syntax")
     parser.add_argument("--no-commit", action="store_true", help="don't highlight commit hash")
+    parser.add_argument("--no-shuffle", action="store_true", help="don't shuffle commit colors")
+    parser.add_argument("--rgb", action="store_true", help="use commit hash to determine color")
     return CLI(**vars(parser.parse_args()))
 
 if __name__ == "__main__":
