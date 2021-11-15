@@ -416,6 +416,12 @@ myKeys conf@XConfig { XMonad.modMask = modMask } =
              , displayWorkspaceHistory
              )
            ]
+        ++
+    -- dunst related
+           [ ( (mod1Mask, xK_space), spawn "dunstctl close" )
+           , ( (mod1Mask .|. shiftMask, xK_space), spawn "dunstctl close-all" )
+           , ( (mod1Mask, xK_grave), spawn "dunstctl history-pop" )
+           ]
   where
     xmessage = "xmessage -bg black -fg green3 -default okay"
     helpCommand =
