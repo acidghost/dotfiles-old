@@ -55,7 +55,7 @@ mainXmobar = do
         , ppTitle  = xmobarColor "green" "" . shorten 180
         }
 
-myConfig lh = ewmh $ def
+myConfig lh = ewmh $ docks $ ewmhFullscreen $ def
     { modMask            = myMod
     , terminal           = "alacritty"
     , borderWidth        = 1
@@ -64,9 +64,9 @@ myConfig lh = ewmh $ def
     , workspaces         = myWorkspaces
     , manageHook         = myManageHook
     , layoutHook         = myLayoutHook
-    , handleEventHook    = handleEventHook def
-                           <+> docksEventHook
-                           <+> fullscreenEventHook
+    -- , handleEventHook    = handleEventHook def
+    --                        <+> docks
+    --                        <+> ewmhFullscreen
     , logHook            = lh
     , keys               = myKeys
     , mouseBindings      = myMouseBindings
