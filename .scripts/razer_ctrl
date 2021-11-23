@@ -18,12 +18,6 @@ class DeviceType(Enum):
     def __str__(self):
         return self.value
 
-    @staticmethod
-    def all():
-        return [
-            DeviceType.MOUSE, DeviceType.KB, DeviceType.MAT, DeviceType.OTHER
-        ]
-
 
 class EffectType(Enum):
     STATIC = "static"
@@ -31,6 +25,18 @@ class EffectType(Enum):
 
     def __str__(self):
         return self.value
+
+
+def parse_int(b_min=None, b_max=None):
+    def inner(value):
+        x = int(value)
+        if b_min is not None and x < b_min:
+            raise argparse.ArgumentTypeError("%d < %d" % (x, b_min))
+        elif b_max is not None and x > b_max:
+            raise argparse.ArgumentTypeError("%d > %d" % (x, b_max))
+        return x
+
+    return inner
 
 
 def parse_args():
@@ -44,9 +50,18 @@ def parse_args():
                         help="Effect",
                         default=EffectType.STATIC)
 
-    parser.add_argument("-r", type=int, help="Red color", default=0)
-    parser.add_argument("-g", type=int, help="Green color", default=0)
-    parser.add_argument("-b", type=int, help="Blue color", default=0)
+    parser.add_argument("-r",
+                        type=parse_int(0, 255),
+                        help="Red color",
+                        default=0)
+    parser.add_argument("-g",
+                        type=parse_int(0, 255),
+                        help="Green color",
+                        default=0)
+    parser.add_argument("-b",
+                        type=parse_int(0, 255),
+                        help="Blue color",
+                        default=0)
 
     parser.add_argument("-d",
                         dest="devices",
@@ -54,7 +69,7 @@ def parse_args():
                         choices=list(DeviceType),
                         nargs="*",
                         help="Devices",
-                        default=[DeviceType.all()])
+                        default=list(DeviceType))
 
     return parser.parse_args()
 
