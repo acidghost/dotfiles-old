@@ -17,8 +17,10 @@ main = config >>= xmobar
     config = configFromArgs $ baseConfig
         { commands = [ Run StdinReader
                      , Run date
+                     , Run batt
                      ]
         , template =
             "|StdinReader| }{ \
-            \<fc=#00FF00>|date|</fc>"
+            \|battery| \
+            \<fc=#00FF00><action=`xclock`>|date|</action></fc>"
         }

@@ -48,6 +48,7 @@ flags:
         with_threaded: true
         with_xft: true
         with_rtsopts: true
+        with_dbus: true
 
 # Extra package databases containing global packages
 # extra-package-dbs: []
