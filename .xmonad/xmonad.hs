@@ -1,4 +1,5 @@
 import           Control.Monad                 ( when )
+import           Data.Functor                  ( (<&>) )
 import qualified Data.Map                      as M
 import           Data.List                     ( elemIndex )
 import           XMonad
@@ -170,7 +171,7 @@ getWorkspacesA = do
     return $ map W.tag $ sort $ W.workspaces ws
 
 getCurrentWorkspace :: X WorkspaceId
-getCurrentWorkspace = gets windowset >>= (return . W.currentTag)
+getCurrentWorkspace = gets windowset <&> W.currentTag
 
 data IterWorkspacesDir = NextWorkspace | PrevWorkspace deriving(Eq)
 
@@ -420,7 +421,7 @@ myKeys conf@XConfig { XMonad.modMask = modMask } =
     -- dunst related
            [ ( (mod1Mask, xK_space), spawn "dunstctl close" )
            , ( (mod1Mask .|. shiftMask, xK_space), spawn "dunstctl close-all" )
-           , ( (mod1Mask, xK_grave), spawn "dunstctl history-pop" )
+           , ( (mod1Mask .|. shiftMask, xK_grave), spawn "dunstctl history-pop" )
            ]
   where
     xmessage = "xmessage -bg black -fg green3 -default okay"
